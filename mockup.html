@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEM Play — App Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #f0f4f8;
+    color: #2d3748;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #2d3748;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: #718096;
+    margin-bottom: 40px;
+  }
+
+  .screen-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .screen-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .screen-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .screen-note {
+    font-size: 0.78rem;
+    color: #718096;
+    max-width: 280px;
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.4;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 300px;
+    height: 620px;
+    border-radius: 36px;
+    background: #1a1a2e;
+    padding: 12px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.2), 0 0 0 2px #333;
+    position: relative;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 26px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Notch */
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 24px;
+    background: #1a1a2e;
+    border-radius: 0 0 16px 16px;
+    z-index: 10;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .status-bar .time { margin-left: 4px; }
+  .status-bar .icons { display: flex; gap: 4px; font-size: 0.6rem; }
+
+  /* === SCREEN 1: SPLASH === */
+  .splash {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .splash .logo-circle {
+    width: 120px;
+    height: 120px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255,255,255,0.3);
+  }
+
+  .splash .logo-icon {
+    font-size: 3.5rem;
+  }
+
+  .splash .app-name {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 2px;
+  }
+
+  .splash .app-tagline {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.8);
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  .splash .khmer-text {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 4px;
+  }
+
+  .splash .telco-badge {
+    position: absolute;
+    bottom: 40px;
+    background: rgba(255,255,255,0.15);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+  }
+
+  /* === SCREEN 2: SIGN IN === */
+  .signin {
+    background: linear-gradient(180deg, #667eea 0%, #5a67d8 40%, #fff 40%);
+  }
+
+  .signin .header-area {
+    padding: 50px 24px 30px;
+    text-align: center;
+  }
+
+  .signin .header-area h2 {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 800;
+  }
+
+  .signin .header-area p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.75rem;
+    margin-top: 4px;
+  }
+
+  .signin .form-area {
+    flex: 1;
+    background: #fff;
+    padding: 30px 24px;
+  }
+
+  .signin .form-area label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4a5568;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .phone-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .country-code {
+    width: 70px;
+    height: 48px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2d3748;
+    background: #f7fafc;
+  }
+
+  .phone-field {
+    flex: 1;
+    height: 48px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 0.95rem;
+    color: #a0aec0;
+    background: #f7fafc;
+  }
+
+  .signin .cta-btn {
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .signin .operator-note {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #a0aec0;
+    line-height: 1.5;
+  }
+
+  .signin .operator-note strong {
+    color: #667eea;
+  }
+
+  .signin .operator-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px;
+    background: #f7fafc;
+    border-radius: 12px;
+  }
+
+  .signin .operator-logo .op-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: #667eea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+  }
+
+  .signin .operator-logo span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4a5568;
+  }
+
+  /* === SCREEN 3: HOME === */
+  .home {
+    background: #f0f4ff;
+  }
+
+  .home .top-bar {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 44px 20px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .home .greeting {
+    color: #fff;
+  }
+
+  .home .greeting .hi {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+
+  .home .greeting .name {
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+
+  .home .avatar {
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+
+  .home .character-banner {
+    background: linear-gradient(135deg, #764ba2, #5b21b6);
+    margin: -1px 0 0 0;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #fff;
+  }
+
+  .home .character-img {
+    width: 70px;
+    height: 70px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    flex-shrink: 0;
+    border: 3px solid rgba(255,255,255,0.3);
+  }
+
+  .home .character-speech {
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.4;
+    position: relative;
+  }
+
+  .home .character-speech::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: rgba(255,255,255,0.15);
+  }
+
+  .home .content-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .home .section-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #4a5568;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .grade-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .grade-card {
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .grade-card .emoji { font-size: 1.6rem; }
+  .grade-card .label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .grade-card .sublabel {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+  }
+
+  .gc1 { background: linear-gradient(135deg, #f6ad55, #ed8936); }
+  .gc2 { background: linear-gradient(135deg, #68d391, #38a169); }
+  .gc3 { background: linear-gradient(135deg, #63b3ed, #3182ce); }
+  .gc4 { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+
+  .home .bottom-nav {
+    height: 56px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-top: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #a0aec0;
+  }
+
+  .nav-item.active { color: #667eea; }
+  .nav-item .nav-icon { font-size: 1.2rem; }
+
+  /* === SCREEN 4: ACTIVITY SELECT === */
+  .activities {
+    background: #f0f4ff;
+  }
+
+  .activities .act-header {
+    background: linear-gradient(135deg, #f6ad55, #ed8936);
+    padding: 44px 20px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .activities .back-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #fff;
+  }
+
+  .activities .act-header h2 {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  .activities .act-header .grade-badge {
+    margin-left: auto;
+    background: rgba(255,255,255,0.25);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .activities .act-list {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .act-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .act-card .act-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .act-card .act-info { flex: 1; }
+  .act-card .act-info .act-name {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #2d3748;
+  }
+
+  .act-card .act-info .act-desc {
+    font-size: 0.68rem;
+    color: #718096;
+    margin-top: 2px;
+  }
+
+  .act-card .act-stars {
+    font-size: 0.7rem;
+    color: #ecc94b;
+    letter-spacing: 1px;
+  }
+
+  .act-card .act-progress {
+    width: 100%;
+    height: 4px;
+    background: #edf2f7;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .act-card .act-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  .act-locked {
+    opacity: 0.5;
+  }
+
+  .act-locked .lock-badge {
+    font-size: 1.2rem;
+  }
+
+  .ai1 { background: #fef3c7; }
+  .ai2 { background: #dbeafe; }
+  .ai3 { background: #d1fae5; }
+  .ai4 { background: #fce7f3; }
+  .ai5 { background: #e9d5ff; }
+
+  .pf1 { background: linear-gradient(90deg, #f6ad55, #ed8936); width: 75%; }
+  .pf2 { background: linear-gradient(90deg, #63b3ed, #3182ce); width: 40%; }
+  .pf3 { background: linear-gradient(90deg, #68d391, #38a169); width: 100%; }
+
+  /* === SCREEN 5: GAME PLAY === */
+  .gameplay {
+    background: linear-gradient(180deg, #ebf4ff 0%, #c3dafe 100%);
+  }
+
+  .gameplay .game-top {
+    padding: 44px 16px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .gameplay .close-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #4a5568;
+  }
+
+  .gameplay .progress-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .gameplay .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e0;
+  }
+
+  .gameplay .dot.done { background: #68d391; }
+  .gameplay .dot.current { background: #667eea; transform: scale(1.2); }
+
+  .gameplay .game-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .gameplay .character-guide {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .gameplay .char-face {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .gameplay .speech-bubble {
+    background: #fff;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #4a5568;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative;
+  }
+
+  .gameplay .speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: #fff;
+  }
+
+  .gameplay .question-area {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+
+  .gameplay .equation {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #2d3748;
+    letter-spacing: 4px;
+  }
+
+  .gameplay .equation .blank {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px dashed #667eea;
+    border-radius: 12px;
+    vertical-align: middle;
+    background: #ebf4ff;
+    margin: 0 4px;
+  }
+
+  .gameplay .objects-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    font-size: 1.8rem;
+  }
+
+  .gameplay .answer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .gameplay .answer-btn {
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+  }
+
+  .ab1 { background: linear-gradient(135deg, #f6ad55, #ed8936); }
+  .ab2 { background: linear-gradient(135deg, #68d391, #38a169); }
+  .ab3 { background: linear-gradient(135deg, #63b3ed, #3182ce); }
+  .ab4 { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+  .ab5 { background: linear-gradient(135deg, #b794f4, #805ad5); }
+  .ab6 { background: linear-gradient(135deg, #f687b3, #d53f8c); }
+
+  /* === SCREEN 6: CELEBRATION === */
+  .celebration {
+    background: linear-gradient(135deg, #fefcbf 0%, #faf089 50%, #f6e05e 100%);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .celebration .stars-row {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    letter-spacing: 8px;
+  }
+
+  .celebration .trophy { font-size: 4rem; margin-bottom: 10px; }
+
+  .celebration .congrats {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #744210;
+  }
+
+  .celebration .congrats-sub {
+    font-size: 0.85rem;
+    color: #975a16;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .celebration .score-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 24px;
+  }
+
+  .celebration .score-item {
+    text-align: center;
+  }
+
+  .celebration .score-num {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #667eea;
+  }
+
+  .celebration .score-label {
+    font-size: 0.65rem;
+    color: #718096;
+    font-weight: 700;
+  }
+
+  .celebration .sticker-earned {
+    background: rgba(255,255,255,0.6);
+    border-radius: 16px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .celebration .sticker-earned .sticker-icon { font-size: 2rem; }
+  .celebration .sticker-earned .sticker-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #744210;
+  }
+
+  .celebration .continue-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+  }
+
+  /* === SCREEN 7: PARENT DASHBOARD === */
+  .parent {
+    background: #f7fafc;
+  }
+
+  .parent .parent-header {
+    background: linear-gradient(135deg, #2d3748, #4a5568);
+    padding: 44px 20px 20px;
+  }
+
+  .parent .parent-header h2 {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  .parent .parent-header p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.7rem;
+    margin-top: 2px;
+  }
+
+  .parent .child-switcher {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .child-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: #edf2f7;
+    color: #4a5568;
+  }
+
+  .child-chip.active {
+    background: #667eea;
+    color: #fff;
+  }
+
+  .parent .stats-area {
+    flex: 1;
+    padding: 16px 20px;
+    overflow-y: auto;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #2d3748;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.65rem;
+    color: #a0aec0;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .stat-card .stat-change {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #38a169;
+    margin-top: 4px;
+  }
+
+  .parent .section-head {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #4a5568;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .skill-row {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .skill-row .skill-name {
+    flex: 1;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #2d3748;
+  }
+
+  .skill-row .skill-bar {
+    width: 80px;
+    height: 6px;
+    background: #edf2f7;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .skill-row .skill-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+
+  .skill-row .skill-pct {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #4a5568;
+    width: 32px;
+    text-align: right;
+  }
+
+  .sf1 { background: #68d391; width: 85%; }
+  .sf2 { background: #63b3ed; width: 60%; }
+  .sf3 { background: #f6ad55; width: 40%; }
+  .sf4 { background: #fc8181; width: 20%; }
+
+  .parent .sub-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 16px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sub-card .sub-info .sub-status {
+    font-size: 0.7rem;
+    font-weight: 800;
+  }
+
+  .sub-card .sub-info .sub-detail {
+    font-size: 0.6rem;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+
+  .sub-card .sub-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+
+  /* === SCREEN 8: KHMER NEW YEAR THEME === */
+  .newyear {
+    background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 30%, #fff7ed 30%);
+  }
+
+  .newyear .ny-header {
+    padding: 44px 20px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .newyear .ny-header h2 {
+    color: #78350f;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .newyear .ny-banner {
+    background: linear-gradient(135deg, #dc2626, #f59e0b);
+    margin: 0 16px;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .newyear .ny-banner .ny-deco {
+    font-size: 2rem;
+    letter-spacing: 8px;
+  }
+
+  .newyear .ny-banner h3 {
+    font-size: 1.1rem;
+    font-weight: 900;
+    margin: 6px 0 4px;
+  }
+
+  .newyear .ny-banner p {
+    font-size: 0.72rem;
+    opacity: 0.9;
+  }
+
+  .newyear .ny-characters {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .ny-char {
+    width: 70px;
+    height: 90px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 2px solid #fbbf24;
+  }
+
+  .ny-char .ny-char-face { font-size: 2rem; }
+  .ny-char .ny-char-label {
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: #78350f;
+  }
+
+  .newyear .ny-activities {
+    padding: 0 16px 16px;
+  }
+
+  .newyear .ny-section-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #78350f;
+    margin-bottom: 10px;
+  }
+
+  .ny-act-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border-left: 4px solid #f59e0b;
+  }
+
+  .ny-act-card .ny-act-icon { font-size: 1.5rem; }
+  .ny-act-card .ny-act-info { flex: 1; }
+  .ny-act-card .ny-act-name {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #2d3748;
+  }
+  .ny-act-card .ny-act-desc {
+    font-size: 0.65rem;
+    color: #718096;
+    margin-top: 2px;
+  }
+
+  .ny-act-card .ny-new-badge {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.55rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 8px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding: 20px;
+    color: #a0aec0;
+    font-size: 0.8rem;
+  }
+
+  /* Print-friendly */
+  @media print {
+    body { background: #fff; }
+    .phone { box-shadow: 0 0 0 1px #ccc; break-inside: avoid; }
+    .screen-grid { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>STEM Play</h1>
+<p class="subtitle">Interactive App Mockup &mdash; Cambodian Kids' STEM Learning App</p>
+
+<div class="screen-grid">
+
+  <!-- SCREEN 1: SPLASH -->
+  <div class="screen-container">
+    <div class="screen-label">1. Splash Screen</div>
+    <div class="phone">
+      <div class="phone-screen splash">
+        <div class="status-bar">
+          <span class="time">9:41</span>
+          <span class="icons">WiFi &bull; 87%</span>
+        </div>
+        <div class="logo-circle">
+          <span class="logo-icon">🧒</span>
+        </div>
+        <div class="app-name">STEM Play</div>
+        <div class="app-tagline">Learn Math. Have Fun.</div>
+        <div class="khmer-text">រៀនគណិតវិទ្យា។ សប្បាយ។</div>
+        <div class="telco-badge">Powered by [Telco Partner]</div>
+      </div>
+    </div>
+    <div class="screen-note">App launch screen. Telco branding at the bottom builds co-brand awareness.</div>
+  </div>
+
+  <!-- SCREEN 2: SIGN IN -->
+  <div class="screen-container">
+    <div class="screen-label">2. Phone Sign-In</div>
+    <div class="phone">
+      <div class="phone-screen signin">
+        <div class="status-bar">
+          <span class="time">9:41</span>
+          <span class="icons">WiFi &bull; 87%</span>
+        </div>
+        <div class="header-area">
+          <h2>Welcome! 🎉</h2>
+          <p>Sign in with your phone number</p>
+        </div>
+        <div class="form-area">
+          <label>Phone Number</label>
+          <div class="phone-input-row">
+            <div class="country-code">🇰🇭 +855</div>
+            <div class="phone-field">078 xxx xxxx</div>
+          </div>
+          <div class="cta-btn">Send OTP Code</div>
+          <div class="operator-note">
+            Available for <strong>[Telco Partner]</strong> subscribers.<br>
+            Subscription is billed to your phone account.
+          </div>
+          <div class="operator-logo">
+            <div class="op-dot">T</div>
+            <span>Exclusive partner</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-note">Phone-number OTP sign-in. Only the partner telco's number prefixes are accepted during the exclusivity period.</div>
+  </div>
+
+  <!-- SCREEN 3: HOME -->
+  <div class="screen-container">
+    <div class="screen-label">3. Home Screen</div>
+    <div class="phone">
+      <div class="phone-screen home">
+        <div class="top-bar">
+          <div class="greeting">
+            <div class="hi">Hello! សួស្តី</div>
+            <div class="name">Sophea 🌟</div>
+          </div>
+          <div class="avatar">👧</div>
+        </div>
+        <div class="character-banner">
+          <div class="character-img">🐘</div>
+          <div class="character-speech">
+            Let's count together today!<br>តោះរាប់ជាមួយគ្នាថ្ងៃនេះ!
+          </div>
+        </div>
+        <div class="content-area">
+          <div class="section-title">Choose Your Level</div>
+          <div class="grade-grid">
+            <div class="grade-card gc1">
+              <span class="emoji">🔢</span>
+              <span class="label">PreK</span>
+              <span class="sublabel">Counting</span>
+            </div>
+            <div class="grade-card gc2">
+              <span class="emoji">➕</span>
+              <span class="label">Grade 1-2</span>
+              <span class="sublabel">Add &amp; Subtract</span>
+            </div>
+            <div class="grade-card gc3">
+              <span class="emoji">✖️</span>
+              <span class="label">Grade 3-4</span>
+              <span class="sublabel">Multiply &amp; Divide</span>
+            </div>
+            <div class="grade-card gc4">
+              <span class="emoji">🧩</span>
+              <span class="label">Grade 5</span>
+              <span class="sublabel">Problem Solving</span>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            Home
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">⭐</span>
+            Stickers
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📊</span>
+            Progress
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">👨‍👩‍👧</span>
+            Parent
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-note">Home screen with animated character guide. Grade cards are large and colorful for easy tapping by young children.</div>
+  </div>
+
+  <!-- SCREEN 4: ACTIVITY SELECT -->
+  <div class="screen-container">
+    <div class="screen-label">4. Activity Selection</div>
+    <div class="phone">
+      <div class="phone-screen activities">
+        <div class="act-header">
+          <div class="back-btn">←</div>
+          <h2>Addition ➕</h2>
+          <div class="grade-badge">Grade 1</div>
+        </div>
+        <div class="act-list">
+          <div class="act-card">
+            <div class="act-icon ai1">🧩</div>
+            <div class="act-info">
+              <div class="act-name">Puzzle Mode</div>
+              <div class="act-desc">Drag objects to complete equations</div>
+              <div class="act-progress"><div class="act-progress-fill pf1"></div></div>
+            </div>
+            <div class="act-stars">⭐⭐⭐</div>
+          </div>
+          <div class="act-card">
+            <div class="act-icon ai2">🎮</div>
+            <div class="act-info">
+              <div class="act-name">Fun Mode</div>
+              <div class="act-desc">Find the missing number</div>
+              <div class="act-progress"><div class="act-progress-fill pf2"></div></div>
+            </div>
+            <div class="act-stars">⭐⭐</div>
+          </div>
+          <div class="act-card">
+            <div class="act-icon ai3">✅</div>
+            <div class="act-info">
+              <div class="act-name">Quiz Mode</div>
+              <div class="act-desc">Test your skills!</div>
+              <div class="act-progress"><div class="act-progress-fill pf3"></div></div>
+            </div>
+            <div class="act-stars">⭐⭐⭐</div>
+          </div>
+          <div class="act-card">
+            <div class="act-icon ai4">🎪</div>
+            <div class="act-info">
+              <div class="act-name">Market Challenge</div>
+              <div class="act-desc">Count mangoes at the market!</div>
+            </div>
+            <div class="act-stars" style="color:#cbd5e0">☆☆☆</div>
+          </div>
+          <div class="act-card act-locked">
+            <div class="act-icon ai5">🔮</div>
+            <div class="act-info">
+              <div class="act-name">Speed Round</div>
+              <div class="act-desc">Complete 3 activities to unlock</div>
+            </div>
+            <div class="lock-badge">🔒</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-note">Activities within a topic. Star ratings and progress bars show mastery. Locked items encourage progression. Culturally relevant: "Market Challenge."</div>
+  </div>
+
+  <!-- SCREEN 5: GAMEPLAY -->
+  <div class="screen-container">
+    <div class="screen-label">5. Gameplay (Addition)</div>
+    <div class="phone">
+      <div class="phone-screen gameplay">
+        <div class="game-top">
+          <div class="close-btn">✕</div>
+          <div class="progress-dots">
+            <div class="dot done"></div>
+            <div class="dot done"></div>
+            <div class="dot done"></div>
+            <div class="dot current"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div style="width:32px"></div>
+        </div>
+        <div class="game-body">
+          <div class="character-guide">
+            <div class="char-face">🐘</div>
+            <div class="speech-bubble">រាប់ស្វាយទាំងអស់! Count all the mangoes!</div>
+          </div>
+          <div class="question-area">
+            <div class="equation">
+              3 + 4 = <span class="blank"></span>
+            </div>
+            <div class="objects-row">
+              🥭🥭🥭 &nbsp;➕&nbsp; 🥭🥭🥭🥭
+            </div>
+          </div>
+          <div class="answer-grid">
+            <div class="answer-btn ab1">5</div>
+            <div class="answer-btn ab2">7</div>
+            <div class="answer-btn ab3">6</div>
+            <div class="answer-btn ab4">8</div>
+            <div class="answer-btn ab5">9</div>
+            <div class="answer-btn ab6">4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-note">Core gameplay. Animated character speaks the instruction (Khmer audio). Mangoes as visual aid — culturally relevant objects. Large, colorful answer buttons.</div>
+  </div>
+
+  <!-- SCREEN 6: CELEBRATION -->
+  <div class="screen-container">
+    <div class="screen-label">6. Celebration / Reward</div>
+    <div class="phone">
+      <div class="phone-screen celebration">
+        <div class="status-bar">
+          <span class="time">9:45</span>
+          <span class="icons">WiFi &bull; 85%</span>
+        </div>
+        <div class="stars-row">⭐⭐⭐</div>
+        <div class="trophy">🏆</div>
+        <div class="congrats">Excellent! ពូកែណាស់!</div>
+        <div class="congrats-sub">You completed Addition Puzzle!</div>
+        <div class="score-card">
+          <div class="score-item">
+            <div class="score-num">10</div>
+            <div class="score-label">Correct</div>
+          </div>
+          <div class="score-item">
+            <div class="score-num">0</div>
+            <div class="score-label">Wrong</div>
+          </div>
+          <div class="score-item">
+            <div class="score-num">2:34</div>
+            <div class="score-label">Time</div>
+          </div>
+        </div>
+        <div class="sticker-earned">
+          <span class="sticker-icon">🦁</span>
+          <span class="sticker-text">New sticker earned!<br>Lion Cub</span>
+        </div>
+        <div class="continue-btn">Continue →</div>
+      </div>
+    </div>
+    <div class="screen-note">Celebration screen with Lottie animations (confetti, star burst). Sticker reward system encourages continued play. Positive, encouraging tone.</div>
+  </div>
+
+  <!-- SCREEN 7: PARENT DASHBOARD -->
+  <div class="screen-container">
+    <div class="screen-label">7. Parent Dashboard</div>
+    <div class="phone">
+      <div class="phone-screen parent">
+        <div class="parent-header">
+          <h2>👨‍👩‍👧 Parent Dashboard</h2>
+          <p>Track your child's learning progress</p>
+        </div>
+        <div class="child-switcher">
+          <div class="child-chip active">👧 Sophea</div>
+          <div class="child-chip">👦 Dara</div>
+          <div class="child-chip">+ Add</div>
+        </div>
+        <div class="stats-area">
+          <div class="stat-row">
+            <div class="stat-card">
+              <div class="stat-value">47</div>
+              <div class="stat-label">Activities Done</div>
+              <div class="stat-change">↑ 12 this week</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">85%</div>
+              <div class="stat-label">Accuracy</div>
+              <div class="stat-change">↑ 5% from last week</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-card">
+              <div class="stat-value">28m</div>
+              <div class="stat-label">Avg. Daily Time</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">14</div>
+              <div class="stat-label">Stickers Earned</div>
+            </div>
+          </div>
+
+          <div class="section-head">Skill Progress</div>
+          <div class="skill-row">
+            <span class="skill-name">Counting</span>
+            <div class="skill-bar"><div class="skill-fill sf1"></div></div>
+            <span class="skill-pct">85%</span>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">Addition</span>
+            <div class="skill-bar"><div class="skill-fill sf2"></div></div>
+            <span class="skill-pct">60%</span>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">Subtraction</span>
+            <div class="skill-bar"><div class="skill-fill sf3"></div></div>
+            <span class="skill-pct">40%</span>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">Shapes</span>
+            <div class="skill-bar"><div class="skill-fill sf4"></div></div>
+            <span class="skill-pct">20%</span>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-info">
+              <div class="sub-status">✓ Active Subscription</div>
+              <div class="sub-detail">[Telco Partner] Family Plan &bull; Renews Apr 15</div>
+            </div>
+            <div class="sub-badge">Manage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-note">Parent-facing dashboard. Multi-child support. Shows subscription status (telco billing). Skill progress helps parents understand learning gaps.</div>
+  </div>
+
+  <!-- SCREEN 8: SEASONAL THEME -->
+  <div class="screen-container">
+    <div class="screen-label">8. Seasonal Theme (Khmer New Year)</div>
+    <div class="phone">
+      <div class="phone-screen newyear">
+        <div class="ny-header">
+          <div class="greeting">
+            <div class="hi" style="color:#92400e;font-size:0.7rem">សួស្តីឆ្នាំថ្មី!</div>
+            <h2>Happy New Year!</h2>
+          </div>
+          <div class="avatar" style="background:#fef3c7;font-size:1.2rem;border-color:#f59e0b">🎊</div>
+        </div>
+        <div class="ny-banner">
+          <div class="ny-deco">🏮🎋🪷🎋🏮</div>
+          <h3>Khmer New Year 2027</h3>
+          <p>Special themed activities &amp; characters!</p>
+        </div>
+        <div class="ny-characters">
+          <div class="ny-char">
+            <span class="ny-char-face">👧</span>
+            <span class="ny-char-label">Neary</span>
+          </div>
+          <div class="ny-char">
+            <span class="ny-char-face">🐘</span>
+            <span class="ny-char-label">Domrey</span>
+          </div>
+          <div class="ny-char">
+            <span class="ny-char-face">👦</span>
+            <span class="ny-char-label">Rithy</span>
+          </div>
+        </div>
+        <div class="ny-activities">
+          <div class="ny-section-title">🎉 New Year Activities</div>
+          <div class="ny-act-card">
+            <span class="ny-act-icon">🏮</span>
+            <div class="ny-act-info">
+              <div class="ny-act-name">Count the Lanterns</div>
+              <div class="ny-act-desc">How many lanterns at the pagoda?</div>
+            </div>
+            <span class="ny-new-badge">NEW</span>
+          </div>
+          <div class="ny-act-card">
+            <span class="ny-act-icon">🪷</span>
+            <div class="ny-act-info">
+              <div class="ny-act-name">Lotus Addition</div>
+              <div class="ny-act-desc">Add lotus flowers for the offering</div>
+            </div>
+            <span class="ny-new-badge">NEW</span>
+          </div>
+          <div class="ny-act-card">
+            <span class="ny-act-icon">🎪</span>
+            <div class="ny-act-info">
+              <div class="ny-act-name">Festival Market</div>
+              <div class="ny-act-desc">Buy treats and count your change</div>
+            </div>
+            <span class="ny-new-badge">NEW</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-note">Seasonal theme pushed from admin dashboard. Characters wear festive outfits (Rive skins). Special activities reference Khmer New Year traditions. Updated without an app store release.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  STEM Play &mdash; App Mockup for Presentation &mdash; Not a functioning prototype<br>
+  Prepared for [Telco Partner] &amp; TRC review
+</div>
+
+</body>
+</html>

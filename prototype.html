@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>STEM Play — Interactive Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #1a1a2e;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 360px;
+    height: 700px;
+    border-radius: 40px;
+    background: #1a1a2e;
+    padding: 12px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4), 0 0 0 2px #333;
+    position: relative;
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #1a1a2e;
+    border-radius: 0 0 18px 18px;
+    z-index: 100;
+  }
+
+  .phone-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    background: #f0f4ff;
+  }
+
+  /* Screen management */
+  .screen {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .screen.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .screen.fade-in {
+    animation: fadeIn 0.35s ease forwards;
+  }
+
+  .screen.fade-out {
+    animation: fadeOut 0.3s ease forwards;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  .status-bar .icons { display: flex; gap: 4px; font-size: 0.6rem; }
+
+  /* ==================== */
+  /* SCREEN: SPLASH       */
+  /* ==================== */
+  #splash {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    align-items: center;
+    justify-content: center;
+  }
+
+  #splash .logo-circle {
+    width: 130px;
+    height: 130px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255,255,255,0.3);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  #splash .logo-icon { font-size: 3.8rem; }
+  #splash .app-name { font-size: 2.2rem; font-weight: 900; color: #fff; letter-spacing: 2px; }
+  #splash .app-tagline { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-top: 6px; font-weight: 600; }
+  #splash .khmer-text { font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-top: 4px; }
+  #splash .telco-badge {
+    position: absolute;
+    bottom: 40px;
+    background: rgba(255,255,255,0.15);
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+  }
+
+  /* ==================== */
+  /* SCREEN: SIGN IN      */
+  /* ==================== */
+  #signin {
+    background: linear-gradient(180deg, #667eea 0%, #5a67d8 40%, #fff 40%);
+  }
+
+  #signin .header-area {
+    padding: 50px 24px 30px;
+    text-align: center;
+  }
+
+  #signin .header-area h2 { color: #fff; font-size: 1.4rem; font-weight: 800; }
+  #signin .header-area p { color: rgba(255,255,255,0.8); font-size: 0.8rem; margin-top: 4px; }
+
+  #signin .form-area {
+    flex: 1;
+    background: #fff;
+    padding: 30px 24px;
+  }
+
+  #signin .form-area label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #4a5568;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .phone-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .country-code {
+    width: 80px;
+    height: 52px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2d3748;
+    background: #f7fafc;
+  }
+
+  .phone-field {
+    flex: 1;
+    height: 52px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 0 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    background: #f7fafc;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+  }
+
+  .phone-field:focus { border-color: #667eea; }
+
+  .cta-btn {
+    width: 100%;
+    height: 54px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.35);
+  }
+
+  .cta-btn:active { transform: scale(0.97); }
+
+  .operator-note {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #a0aec0;
+    line-height: 1.5;
+  }
+
+  .operator-note strong { color: #667eea; }
+
+  .operator-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px;
+    background: #f7fafc;
+    border-radius: 12px;
+  }
+
+  .operator-logo .op-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: #667eea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+  }
+
+  .operator-logo span { font-size: 0.78rem; font-weight: 700; color: #4a5568; }
+
+  /* ==================== */
+  /* SCREEN: OTP          */
+  /* ==================== */
+  #otp {
+    background: linear-gradient(180deg, #667eea 0%, #5a67d8 40%, #fff 40%);
+  }
+
+  #otp .header-area {
+    padding: 50px 24px 30px;
+    text-align: center;
+  }
+
+  #otp .header-area h2 { color: #fff; font-size: 1.4rem; font-weight: 800; }
+  #otp .header-area p { color: rgba(255,255,255,0.8); font-size: 0.8rem; margin-top: 4px; }
+
+  #otp .form-area {
+    flex: 1;
+    background: #fff;
+    padding: 30px 24px;
+    text-align: center;
+  }
+
+  .otp-boxes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 24px 0;
+  }
+
+  .otp-box {
+    width: 56px;
+    height: 64px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    color: #2d3748;
+    background: #f7fafc;
+    outline: none;
+  }
+
+  .otp-box:focus { border-color: #667eea; background: #fff; }
+
+  .otp-sent-to {
+    font-size: 0.78rem;
+    color: #718096;
+    margin-bottom: 8px;
+  }
+
+  .otp-resend {
+    font-size: 0.75rem;
+    color: #667eea;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 16px;
+  }
+
+  .spinner-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 50;
+    border-radius: 30px;
+  }
+
+  .spinner-overlay.show { display: flex; }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .spinner-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #4a5568;
+  }
+
+  /* ==================== */
+  /* SCREEN: HOME         */
+  /* ==================== */
+  #home { background: #f0f4ff; }
+
+  #home .top-bar {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 44px 20px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  #home .greeting { color: #fff; }
+  #home .greeting .hi { font-size: 0.78rem; opacity: 0.85; }
+  #home .greeting .name { font-size: 1.25rem; font-weight: 800; }
+
+  #home .avatar {
+    width: 46px;
+    height: 46px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+
+  #home .character-banner {
+    background: linear-gradient(135deg, #764ba2, #5b21b6);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  #home .character-img {
+    width: 70px;
+    height: 70px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    flex-shrink: 0;
+    border: 3px solid rgba(255,255,255,0.3);
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .character-speech {
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.45;
+    position: relative;
+  }
+
+  .character-speech::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: rgba(255,255,255,0.15);
+  }
+
+  #home .content-area {
+    flex: 1;
+    padding: 18px 20px;
+    overflow-y: auto;
+  }
+
+  .section-title {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #4a5568;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .grade-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .grade-card {
+    border-radius: 16px;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .grade-card:active { transform: scale(0.95); }
+  .grade-card .emoji { font-size: 1.7rem; }
+  .grade-card .label { font-size: 0.78rem; font-weight: 800; color: #fff; }
+  .grade-card .sublabel { font-size: 0.62rem; color: rgba(255,255,255,0.85); font-weight: 600; }
+
+  .gc1 { background: linear-gradient(135deg, #f6ad55, #ed8936); }
+  .gc2 { background: linear-gradient(135deg, #68d391, #38a169); }
+  .gc3 { background: linear-gradient(135deg, #63b3ed, #3182ce); }
+  .gc4 { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 10px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #78350f;
+    transition: transform 0.15s;
+  }
+
+  .theme-toggle:active { transform: scale(0.97); }
+
+  /* Bottom nav */
+  .bottom-nav {
+    height: 58px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-top: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+  }
+
+  .nav-item.active { color: #667eea; }
+  .nav-item .nav-icon { font-size: 1.25rem; }
+
+  /* ==================== */
+  /* SCREEN: ACTIVITIES   */
+  /* ==================== */
+  #activities { background: #f0f4ff; }
+
+  #activities .act-header {
+    padding: 44px 20px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    width: 38px;
+    height: 38px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s;
+  }
+
+  .back-btn:active { transform: scale(0.9); }
+
+  #activities .act-header h2 { color: #fff; font-size: 1.15rem; font-weight: 800; }
+
+  .grade-badge {
+    margin-left: auto;
+    background: rgba(255,255,255,0.25);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  #activities .act-list {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .act-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .act-card:active { transform: scale(0.97); }
+
+  .act-card .act-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .act-card .act-info { flex: 1; }
+  .act-card .act-name { font-size: 0.88rem; font-weight: 800; color: #2d3748; }
+  .act-card .act-desc { font-size: 0.7rem; color: #718096; margin-top: 2px; }
+
+  .act-card .act-progress {
+    width: 100%;
+    height: 4px;
+    background: #edf2f7;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .act-card .act-progress-fill { height: 100%; border-radius: 2px; }
+
+  .act-card .act-stars { font-size: 0.72rem; color: #ecc94b; letter-spacing: 1px; }
+
+  .act-locked { opacity: 0.5; cursor: not-allowed; }
+  .act-locked .lock-badge { font-size: 1.2rem; }
+
+  .ai1 { background: #fef3c7; }
+  .ai2 { background: #dbeafe; }
+  .ai3 { background: #d1fae5; }
+  .ai4 { background: #fce7f3; }
+  .ai5 { background: #e9d5ff; }
+
+  /* ==================== */
+  /* SCREEN: GAMEPLAY     */
+  /* ==================== */
+  #gameplay {
+    background: linear-gradient(180deg, #ebf4ff 0%, #c3dafe 100%);
+  }
+
+  #gameplay .game-top {
+    padding: 44px 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .close-btn {
+    width: 34px;
+    height: 34px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    color: #4a5568;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s;
+  }
+
+  .close-btn:active { transform: scale(0.9); }
+
+  .progress-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e0;
+    transition: all 0.3s;
+  }
+
+  .dot.done { background: #68d391; }
+  .dot.current { background: #667eea; transform: scale(1.3); }
+  .dot.wrong { background: #fc8181; }
+
+  #gameplay .game-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 20px 16px;
+    overflow-y: auto;
+  }
+
+  .character-guide {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    width: 100%;
+  }
+
+  .char-face {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .speech-bubble {
+    background: #fff;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #4a5568;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative;
+    flex: 1;
+  }
+
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: #fff;
+  }
+
+  .question-area {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+  }
+
+  .equation {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: #2d3748;
+    letter-spacing: 4px;
+  }
+
+  .equation .blank {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px dashed #667eea;
+    border-radius: 12px;
+    vertical-align: middle;
+    background: #ebf4ff;
+    margin: 0 4px;
+    line-height: 50px;
+    color: #667eea;
+  }
+
+  .objects-row {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 14px;
+    font-size: 1.6rem;
+    flex-wrap: wrap;
+  }
+
+  .answer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .answer-btn {
+    height: 58px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+    cursor: pointer;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    transition: transform 0.1s;
+  }
+
+  .answer-btn:active { transform: scale(0.93); }
+
+  .answer-btn.correct {
+    background: #38a169 !important;
+    animation: popCorrect 0.5s ease;
+  }
+
+  .answer-btn.wrong {
+    animation: shake 0.4s ease;
+    background: #e53e3e !important;
+  }
+
+  .ab1 { background: linear-gradient(135deg, #f6ad55, #ed8936); }
+  .ab2 { background: linear-gradient(135deg, #68d391, #38a169); }
+  .ab3 { background: linear-gradient(135deg, #63b3ed, #3182ce); }
+  .ab4 { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+  .ab5 { background: linear-gradient(135deg, #b794f4, #805ad5); }
+  .ab6 { background: linear-gradient(135deg, #f687b3, #d53f8c); }
+
+  .celebration-flash {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 20;
+    display: none;
+  }
+
+  .celebration-flash.show {
+    display: block;
+    animation: flashGreen 0.6s ease;
+  }
+
+  /* ==================== */
+  /* SCREEN: CELEBRATION  */
+  /* ==================== */
+  #celebration {
+    background: linear-gradient(135deg, #fefcbf 0%, #faf089 50%, #f6e05e 100%);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+  #celebration .stars-row { font-size: 2.8rem; margin-bottom: 10px; letter-spacing: 8px; }
+  #celebration .trophy { font-size: 4.5rem; margin-bottom: 10px; animation: bounce 1.5s ease-in-out infinite; }
+  #celebration .congrats { font-size: 1.5rem; font-weight: 900; color: #744210; }
+  #celebration .congrats-sub { font-size: 0.88rem; color: #975a16; margin-top: 4px; font-weight: 600; }
+
+  #celebration .score-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px 28px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .score-item { text-align: center; }
+  .score-num { font-size: 1.8rem; font-weight: 900; color: #667eea; }
+  .score-label { font-size: 0.68rem; color: #718096; font-weight: 700; }
+
+  #celebration .sticker-earned {
+    background: rgba(255,255,255,0.6);
+    border-radius: 16px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    animation: slideUp 0.6s ease 0.3s both;
+  }
+
+  .sticker-earned .sticker-icon { font-size: 2.2rem; }
+  .sticker-earned .sticker-text { font-size: 0.78rem; font-weight: 700; color: #744210; text-align: left; }
+
+  #celebration .continue-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    padding: 16px 44px;
+    border-radius: 16px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  #celebration .continue-btn:active { transform: scale(0.95); }
+
+  /* Confetti */
+  .confetti-container {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    animation: confettiFall 3s ease-in forwards;
+  }
+
+  /* ==================== */
+  /* SCREEN: PARENT       */
+  /* ==================== */
+  #parent { background: #f7fafc; }
+
+  #parent .parent-header {
+    background: linear-gradient(135deg, #2d3748, #4a5568);
+    padding: 44px 20px 18px;
+    flex-shrink: 0;
+  }
+
+  #parent .parent-header h2 { color: #fff; font-size: 1.15rem; font-weight: 800; }
+  #parent .parent-header p { color: rgba(255,255,255,0.6); font-size: 0.72rem; margin-top: 2px; }
+
+  .child-switcher {
+    display: flex;
+    gap: 10px;
+    padding: 14px 20px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  .child-chip {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: #edf2f7;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .child-chip.active { background: #667eea; color: #fff; }
+
+  #parent .stats-area {
+    flex: 1;
+    padding: 16px 20px;
+    overflow-y: auto;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .stat-card .stat-value { font-size: 1.5rem; font-weight: 900; color: #2d3748; }
+  .stat-card .stat-label { font-size: 0.67rem; color: #a0aec0; font-weight: 700; margin-top: 2px; }
+  .stat-card .stat-change { font-size: 0.62rem; font-weight: 700; color: #38a169; margin-top: 4px; }
+
+  .section-head {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #4a5568;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .skill-row {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .skill-row .skill-name { flex: 1; font-size: 0.8rem; font-weight: 700; color: #2d3748; }
+
+  .skill-row .skill-bar {
+    width: 80px;
+    height: 6px;
+    background: #edf2f7;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .skill-row .skill-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .skill-row .skill-pct { font-size: 0.72rem; font-weight: 800; color: #4a5568; width: 36px; text-align: right; }
+
+  .sub-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 14px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sub-card .sub-status { font-size: 0.72rem; font-weight: 800; }
+  .sub-card .sub-detail { font-size: 0.62rem; opacity: 0.8; margin-top: 2px; }
+
+  .sub-card .sub-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+
+  /* ==================== */
+  /* SCREEN: STICKERS     */
+  /* ==================== */
+  #stickers { background: #f0f4ff; }
+
+  #stickers .stickers-header {
+    background: linear-gradient(135deg, #ecc94b, #d69e2e);
+    padding: 44px 20px 18px;
+    flex-shrink: 0;
+  }
+
+  #stickers .stickers-header h2 { color: #fff; font-size: 1.15rem; font-weight: 800; }
+  #stickers .stickers-header p { color: rgba(255,255,255,0.8); font-size: 0.72rem; margin-top: 2px; }
+
+  .sticker-grid {
+    flex: 1;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    overflow-y: auto;
+    align-content: start;
+  }
+
+  .sticker-cell {
+    aspect-ratio: 1;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative;
+  }
+
+  .sticker-cell .sticker-emoji { font-size: 2rem; }
+  .sticker-cell .sticker-name { font-size: 0.6rem; font-weight: 700; color: #4a5568; }
+
+  .sticker-cell.locked {
+    background: #edf2f7;
+  }
+
+  .sticker-cell.locked .sticker-emoji {
+    filter: grayscale(1) brightness(0.7);
+    opacity: 0.3;
+  }
+
+  .sticker-cell.locked .sticker-name { color: #a0aec0; }
+
+  .sticker-cell.locked::after {
+    content: '🔒';
+    position: absolute;
+    font-size: 1rem;
+  }
+
+  .sticker-cell.earned {
+    border: 2px solid #ecc94b;
+    animation: popIn 0.3s ease;
+  }
+
+  /* ==================== */
+  /* SCREEN: KHMER NY     */
+  /* ==================== */
+  #newyear {
+    background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 30%, #fff7ed 30%);
+  }
+
+  #newyear .ny-header {
+    padding: 44px 20px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  #newyear .ny-header .hi { color: #92400e; font-size: 0.72rem; font-weight: 700; }
+  #newyear .ny-header h2 { color: #78350f; font-size: 1.05rem; font-weight: 800; }
+
+  #newyear .ny-avatar {
+    width: 46px;
+    height: 46px;
+    background: #fef3c7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    border: 2px solid #f59e0b;
+  }
+
+  .ny-banner {
+    background: linear-gradient(135deg, #dc2626, #f59e0b);
+    margin: 0 16px;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .ny-banner .ny-deco { font-size: 2rem; letter-spacing: 8px; }
+  .ny-banner h3 { font-size: 1.15rem; font-weight: 900; margin: 6px 0 4px; }
+  .ny-banner p { font-size: 0.75rem; opacity: 0.9; }
+
+  .ny-characters {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 18px;
+    flex-shrink: 0;
+  }
+
+  .ny-char {
+    width: 72px;
+    height: 92px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 2px solid #fbbf24;
+  }
+
+  .ny-char .ny-char-face { font-size: 2rem; }
+  .ny-char .ny-char-label { font-size: 0.58rem; font-weight: 700; color: #78350f; }
+
+  .ny-activities {
+    flex: 1;
+    padding: 0 16px 16px;
+    overflow-y: auto;
+  }
+
+  .ny-section-title { font-size: 0.78rem; font-weight: 800; color: #78350f; margin-bottom: 10px; }
+
+  .ny-act-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border-left: 4px solid #f59e0b;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .ny-act-card:active { transform: scale(0.97); }
+  .ny-act-card .ny-act-icon { font-size: 1.5rem; }
+  .ny-act-card .ny-act-info { flex: 1; }
+  .ny-act-card .ny-act-name { font-size: 0.82rem; font-weight: 800; color: #2d3748; }
+  .ny-act-card .ny-act-desc { font-size: 0.68rem; color: #718096; margin-top: 2px; }
+  .ny-act-card .ny-new-badge {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 8px;
+  }
+
+  #newyear .back-home-btn {
+    margin: 0 16px 16px;
+    height: 48px;
+    background: linear-gradient(135deg, #78350f, #92400e);
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+
+  #newyear .back-home-btn:active { transform: scale(0.97); }
+
+  /* ==================== */
+  /* TOAST                */
+  /* ==================== */
+  .toast {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #2d3748;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 200;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ==================== */
+  /* ANIMATIONS           */
+  /* ==================== */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  @keyframes popCorrect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes confettiFall {
+    0% { top: -10px; opacity: 1; transform: rotate(0deg) translateX(0); }
+    100% { top: 110%; opacity: 0; transform: rotate(720deg) translateX(var(--drift)); }
+  }
+
+  @keyframes flashGreen {
+    0% { background: rgba(72,187,120,0.4); }
+    100% { background: transparent; }
+  }
+
+  /* Responsive: full screen on mobile */
+  @media (max-width: 400px) {
+    body { background: #f0f4ff; }
+    .phone {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+    }
+    .phone::before { display: none; }
+    .phone-inner { border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="phone-inner">
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ========== SPLASH ========== -->
+    <div class="screen active" id="splash">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <span class="icons">WiFi &bull; 87%</span>
+      </div>
+      <div class="logo-circle">
+        <span class="logo-icon">🧒</span>
+      </div>
+      <div class="app-name">STEM Play</div>
+      <div class="app-tagline">Learn Math. Have Fun.</div>
+      <div class="khmer-text">រៀនគណិតវិទ្យា។ សប្បាយ។</div>
+      <div class="telco-badge">Powered by [Telco Partner]</div>
+    </div>
+
+    <!-- ========== SIGN IN ========== -->
+    <div class="screen" id="signin">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <span class="icons">WiFi &bull; 87%</span>
+      </div>
+      <div class="header-area">
+        <h2>Welcome! 🎉</h2>
+        <p>Sign in with your phone number</p>
+      </div>
+      <div class="form-area">
+        <label>Phone Number</label>
+        <div class="phone-input-row">
+          <div class="country-code">🇰🇭 +855</div>
+          <input type="tel" class="phone-field" id="phoneInput" placeholder="078 xxx xxxx" value="078 912 3456">
+        </div>
+        <button class="cta-btn" onclick="handleSendOTP()">Send OTP Code</button>
+        <div class="operator-note">
+          Available for <strong>[Telco Partner]</strong> subscribers.<br>
+          Subscription is billed to your phone account.
+        </div>
+        <div class="operator-logo">
+          <div class="op-dot">T</div>
+          <span>Exclusive partner</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== OTP ========== -->
+    <div class="screen" id="otp">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <span class="icons">WiFi &bull; 87%</span>
+      </div>
+      <div class="header-area">
+        <h2>Enter OTP 🔐</h2>
+        <p>We sent a code to your phone</p>
+      </div>
+      <div class="form-area">
+        <div class="otp-sent-to" id="otpSentTo">Code sent to +855 078 912 3456</div>
+        <div class="otp-boxes">
+          <input type="text" class="otp-box" maxlength="1" data-otp="0" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" data-otp="1" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" data-otp="2" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" data-otp="3" inputmode="numeric">
+        </div>
+        <div class="otp-resend" onclick="showToast('New code sent!')">Resend Code</div>
+      </div>
+      <div class="spinner-overlay" id="otpSpinner">
+        <div class="spinner"></div>
+        <div class="spinner-text">Verifying...</div>
+      </div>
+    </div>
+
+    <!-- ========== HOME ========== -->
+    <div class="screen" id="home">
+      <div class="top-bar">
+        <div class="greeting">
+          <div class="hi">Hello! សួស្តី</div>
+          <div class="name">Sophea 🌟</div>
+        </div>
+        <div class="avatar">👧</div>
+      </div>
+      <div class="character-banner">
+        <div class="character-img">🐘</div>
+        <div class="character-speech">
+          Let's count together today!<br>តោះរាប់ជាមួយគ្នាថ្ងៃនេះ!
+        </div>
+      </div>
+      <div class="content-area">
+        <div class="section-title">Choose Your Level</div>
+        <div class="grade-grid">
+          <div class="grade-card gc1" onclick="selectGrade('PreK', 'Counting', 0)">
+            <span class="emoji">🔢</span>
+            <span class="label">PreK</span>
+            <span class="sublabel">Counting</span>
+          </div>
+          <div class="grade-card gc2" onclick="selectGrade('Grade 1-2', 'Add & Subtract', 1)">
+            <span class="emoji">➕</span>
+            <span class="label">Grade 1-2</span>
+            <span class="sublabel">Add & Subtract</span>
+          </div>
+          <div class="grade-card gc3" onclick="selectGrade('Grade 3-4', 'Multiply & Divide', 2)">
+            <span class="emoji">✖️</span>
+            <span class="label">Grade 3-4</span>
+            <span class="sublabel">Multiply & Divide</span>
+          </div>
+          <div class="grade-card gc4" onclick="selectGrade('Grade 5', 'Problem Solving', 3)">
+            <span class="emoji">🧩</span>
+            <span class="label">Grade 5</span>
+            <span class="sublabel">Problem Solving</span>
+          </div>
+        </div>
+        <div class="theme-toggle" onclick="showScreen('newyear')">
+          🏮 Preview Khmer New Year Theme
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item active" onclick="showScreen('home')">
+          <span class="nav-icon">🏠</span>Home
+        </div>
+        <div class="nav-item" onclick="showScreen('stickers')">
+          <span class="nav-icon">⭐</span>Stickers
+        </div>
+        <div class="nav-item" onclick="showScreen('parent')">
+          <span class="nav-icon">📊</span>Progress
+        </div>
+        <div class="nav-item" onclick="showScreen('parent')">
+          <span class="nav-icon">👨‍👩‍👧</span>Parent
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ACTIVITIES ========== -->
+    <div class="screen" id="activities">
+      <div class="act-header" id="actHeader" style="background: linear-gradient(135deg, #f6ad55, #ed8936);">
+        <button class="back-btn" onclick="showScreen('home')">←</button>
+        <h2 id="actTitle">Addition ➕</h2>
+        <div class="grade-badge" id="actGradeBadge">Grade 1</div>
+      </div>
+      <div class="act-list">
+        <div class="act-card" onclick="startGame('Puzzle Mode')">
+          <div class="act-icon ai1">🧩</div>
+          <div class="act-info">
+            <div class="act-name">Puzzle Mode</div>
+            <div class="act-desc">Drag objects to complete equations</div>
+            <div class="act-progress"><div class="act-progress-fill" id="pf1" style="background:linear-gradient(90deg,#f6ad55,#ed8936);width:0%"></div></div>
+          </div>
+          <div class="act-stars" id="as1" style="color:#cbd5e0">☆☆☆</div>
+        </div>
+        <div class="act-card" onclick="startGame('Fun Mode')">
+          <div class="act-icon ai2">🎮</div>
+          <div class="act-info">
+            <div class="act-name">Fun Mode</div>
+            <div class="act-desc">Find the missing number</div>
+            <div class="act-progress"><div class="act-progress-fill" id="pf2" style="background:linear-gradient(90deg,#63b3ed,#3182ce);width:0%"></div></div>
+          </div>
+          <div class="act-stars" id="as2" style="color:#cbd5e0">☆☆☆</div>
+        </div>
+        <div class="act-card" onclick="startGame('Quiz Mode')">
+          <div class="act-icon ai3">✅</div>
+          <div class="act-info">
+            <div class="act-name">Quiz Mode</div>
+            <div class="act-desc">Test your skills!</div>
+            <div class="act-progress"><div class="act-progress-fill" id="pf3" style="background:linear-gradient(90deg,#68d391,#38a169);width:0%"></div></div>
+          </div>
+          <div class="act-stars" id="as3" style="color:#cbd5e0">☆☆☆</div>
+        </div>
+        <div class="act-card" onclick="startGame('Market Challenge')">
+          <div class="act-icon ai4">🎪</div>
+          <div class="act-info">
+            <div class="act-name">Market Challenge</div>
+            <div class="act-desc">Count mangoes at the market!</div>
+          </div>
+          <div class="act-stars" id="as4" style="color:#cbd5e0">☆☆☆</div>
+        </div>
+        <div class="act-card act-locked" onclick="showToast('🔒 Complete 3 activities to unlock!')">
+          <div class="act-icon ai5">🔮</div>
+          <div class="act-info">
+            <div class="act-name">Speed Round</div>
+            <div class="act-desc">Complete 3 activities to unlock</div>
+          </div>
+          <div class="lock-badge">🔒</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== GAMEPLAY ========== -->
+    <div class="screen" id="gameplay">
+      <div class="celebration-flash" id="celebFlash"></div>
+      <div class="game-top">
+        <button class="close-btn" onclick="showScreen('activities')">✕</button>
+        <div class="progress-dots" id="progressDots"></div>
+        <div style="width:34px"></div>
+      </div>
+      <div class="game-body">
+        <div class="character-guide">
+          <div class="char-face">🐘</div>
+          <div class="speech-bubble" id="speechBubble">រាប់ស្វាយទាំងអស់!<br>Count all the mangoes!</div>
+        </div>
+        <div class="question-area">
+          <div class="equation" id="equation">3 + 4 = <span class="blank" id="blankAnswer"></span></div>
+          <div class="objects-row" id="objectsRow"></div>
+        </div>
+        <div class="answer-grid" id="answerGrid"></div>
+      </div>
+    </div>
+
+    <!-- ========== CELEBRATION ========== -->
+    <div class="screen" id="celebration">
+      <div class="confetti-container" id="confettiContainer"></div>
+      <div class="stars-row" id="starsRow">⭐⭐⭐</div>
+      <div class="trophy">🏆</div>
+      <div class="congrats">Excellent! ពូកែណាស់!</div>
+      <div class="congrats-sub" id="celebSub">You completed Addition Puzzle!</div>
+      <div class="score-card">
+        <div class="score-item">
+          <div class="score-num" id="scoreCorrect">10</div>
+          <div class="score-label">Correct</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num" id="scoreWrong">0</div>
+          <div class="score-label">Wrong</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num" id="scoreTime">2:34</div>
+          <div class="score-label">Time</div>
+        </div>
+      </div>
+      <div class="sticker-earned">
+        <span class="sticker-icon" id="earnedStickerIcon">🦁</span>
+        <span class="sticker-text" id="earnedStickerText">New sticker earned!<br>Lion Cub</span>
+      </div>
+      <button class="continue-btn" onclick="finishCelebration()">Continue →</button>
+    </div>
+
+    <!-- ========== PARENT DASHBOARD ========== -->
+    <div class="screen" id="parent">
+      <div class="parent-header">
+        <h2>👨‍👩‍👧 Parent Dashboard</h2>
+        <p>Track your child's learning progress</p>
+      </div>
+      <div class="child-switcher">
+        <div class="child-chip active" id="chipSophea" onclick="switchChild('Sophea')">👧 Sophea</div>
+        <div class="child-chip" id="chipDara" onclick="switchChild('Dara')">👦 Dara</div>
+        <div class="child-chip">+ Add</div>
+      </div>
+      <div class="stats-area">
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-value" id="statActivities">0</div>
+            <div class="stat-label">Activities Done</div>
+            <div class="stat-change" id="statActChange"></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statAccuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-value" id="statTime">0m</div>
+            <div class="stat-label">Total Play Time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statStickers">0</div>
+            <div class="stat-label">Stickers Earned</div>
+          </div>
+        </div>
+
+        <div class="section-head">Skill Progress</div>
+        <div class="skill-row">
+          <span class="skill-name">Addition</span>
+          <div class="skill-bar"><div class="skill-fill" id="skillAdd" style="background:#68d391;width:0%"></div></div>
+          <span class="skill-pct" id="skillAddPct">0%</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Subtraction</span>
+          <div class="skill-bar"><div class="skill-fill" id="skillSub" style="background:#63b3ed;width:0%"></div></div>
+          <span class="skill-pct" id="skillSubPct">0%</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Multiplication</span>
+          <div class="skill-bar"><div class="skill-fill" id="skillMul" style="background:#f6ad55;width:0%"></div></div>
+          <span class="skill-pct" id="skillMulPct">0%</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Counting</span>
+          <div class="skill-bar"><div class="skill-fill" id="skillCount" style="background:#fc8181;width:0%"></div></div>
+          <span class="skill-pct" id="skillCountPct">0%</span>
+        </div>
+
+        <div class="sub-card">
+          <div>
+            <div class="sub-status">✓ Active Subscription</div>
+            <div class="sub-detail">[Telco Partner] Family Plan &bull; Renews Apr 15</div>
+          </div>
+          <div class="sub-badge">Manage</div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="showScreen('home')">
+          <span class="nav-icon">🏠</span>Home
+        </div>
+        <div class="nav-item" onclick="showScreen('stickers')">
+          <span class="nav-icon">⭐</span>Stickers
+        </div>
+        <div class="nav-item active" onclick="showScreen('parent')">
+          <span class="nav-icon">📊</span>Progress
+        </div>
+        <div class="nav-item active" onclick="showScreen('parent')">
+          <span class="nav-icon">👨‍👩‍👧</span>Parent
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== STICKERS ========== -->
+    <div class="screen" id="stickers">
+      <div class="stickers-header">
+        <h2>⭐ Sticker Collection</h2>
+        <p id="stickerCount">0 of 12 earned</p>
+      </div>
+      <div class="sticker-grid" id="stickerGrid"></div>
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="showScreen('home')">
+          <span class="nav-icon">🏠</span>Home
+        </div>
+        <div class="nav-item active" onclick="showScreen('stickers')">
+          <span class="nav-icon">⭐</span>Stickers
+        </div>
+        <div class="nav-item" onclick="showScreen('parent')">
+          <span class="nav-icon">📊</span>Progress
+        </div>
+        <div class="nav-item" onclick="showScreen('parent')">
+          <span class="nav-icon">👨‍👩‍👧</span>Parent
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== KHMER NEW YEAR ========== -->
+    <div class="screen" id="newyear">
+      <div class="ny-header">
+        <div>
+          <div class="hi">សួស្តីឆ្នាំថ្មី!</div>
+          <h2>Happy New Year!</h2>
+        </div>
+        <div class="ny-avatar">🎊</div>
+      </div>
+      <div class="ny-banner">
+        <div class="ny-deco">🏮🎋🪷🎋🏮</div>
+        <h3>Khmer New Year 2027</h3>
+        <p>Special themed activities & characters!</p>
+      </div>
+      <div class="ny-characters">
+        <div class="ny-char">
+          <span class="ny-char-face">👧</span>
+          <span class="ny-char-label">Neary</span>
+        </div>
+        <div class="ny-char">
+          <span class="ny-char-face">🐘</span>
+          <span class="ny-char-label">Domrey</span>
+        </div>
+        <div class="ny-char">
+          <span class="ny-char-face">👦</span>
+          <span class="ny-char-label">Rithy</span>
+        </div>
+      </div>
+      <div class="ny-activities">
+        <div class="ny-section-title">🎉 New Year Activities</div>
+        <div class="ny-act-card" onclick="showToast('🏮 Coming soon for New Year!')">
+          <span class="ny-act-icon">🏮</span>
+          <div class="ny-act-info">
+            <div class="ny-act-name">Count the Lanterns</div>
+            <div class="ny-act-desc">How many lanterns at the pagoda?</div>
+          </div>
+          <span class="ny-new-badge">NEW</span>
+        </div>
+        <div class="ny-act-card" onclick="showToast('🪷 Coming soon for New Year!')">
+          <span class="ny-act-icon">🪷</span>
+          <div class="ny-act-info">
+            <div class="ny-act-name">Lotus Addition</div>
+            <div class="ny-act-desc">Add lotus flowers for the offering</div>
+          </div>
+          <span class="ny-new-badge">NEW</span>
+        </div>
+        <div class="ny-act-card" onclick="showToast('🎪 Coming soon for New Year!')">
+          <span class="ny-act-icon">🎪</span>
+          <div class="ny-act-info">
+            <div class="ny-act-name">Festival Market</div>
+            <div class="ny-act-desc">Buy treats and count your change</div>
+          </div>
+          <span class="ny-new-badge">NEW</span>
+        </div>
+      </div>
+      <button class="back-home-btn" onclick="showScreen('home')">← Back to Home</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================
+// STATE
+// ============================
+const state = {
+  currentScreen: 'splash',
+  playerName: 'Sophea',
+  selectedGrade: null,
+  gradeIndex: 0,
+  activityName: '',
+  questions: [],
+  questionIndex: 0,
+  score: 0,
+  wrongCount: 0,
+  startTime: null,
+  sessionStats: {
+    totalActivities: 0,
+    totalCorrect: 0,
+    totalQuestions: 0,
+    totalTimeMs: 0,
+    activitiesCompleted: [] // track activity names
+  },
+  stickers: [],
+  answering: false
+};
+
+const ALL_STICKERS = [
+  { emoji: '🦁', name: 'Lion Cub' },
+  { emoji: '🐘', name: 'Elephant' },
+  { emoji: '🦋', name: 'Butterfly' },
+  { emoji: '🐢', name: 'Turtle' },
+  { emoji: '🦜', name: 'Parrot' },
+  { emoji: '🐬', name: 'Dolphin' },
+  { emoji: '🦊', name: 'Fox' },
+  { emoji: '🐼', name: 'Panda' },
+  { emoji: '🦄', name: 'Unicorn' },
+  { emoji: '🐉', name: 'Dragon' },
+  { emoji: '🦩', name: 'Flamingo' },
+  { emoji: '🐨', name: 'Koala' }
+];
+
+const OBJECTS = ['🥭', '🍎', '🍌', '🌟', '🐟', '🪷', '🎈', '🍊'];
+
+const GRADE_COLORS = [
+  'linear-gradient(135deg, #f6ad55, #ed8936)',
+  'linear-gradient(135deg, #68d391, #38a169)',
+  'linear-gradient(135deg, #63b3ed, #3182ce)',
+  'linear-gradient(135deg, #fc8181, #e53e3e)'
+];
+
+const GRADE_TITLES = [
+  { title: 'Counting 🔢', badge: 'PreK' },
+  { title: 'Addition ➕', badge: 'Grade 1-2' },
+  { title: 'Multiply ✖️', badge: 'Grade 3-4' },
+  { title: 'Problem Solving 🧩', badge: 'Grade 5' }
+];
+
+const BILINGUAL_PROMPTS = [
+  { en: 'Count all the mangoes!', km: 'រាប់ស្វាយទាំងអស់!' },
+  { en: 'How many are there?', km: 'មានប៉ុន្មាន?' },
+  { en: 'What is the answer?', km: 'ចម្លើយគឺជាអ្វី?' },
+  { en: 'You can do it!', km: 'អ្នកអាចធ្វើបាន!' },
+  { en: 'Great job, keep going!', km: 'ពូកែណាស់ បន្តទៀត!' }
+];
+
+// ============================
+// SCREEN MANAGEMENT
+// ============================
+function showScreen(name) {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => {
+    if (s.id === name) {
+      s.classList.add('active', 'fade-in');
+      s.classList.remove('fade-out');
+      setTimeout(() => s.classList.remove('fade-in'), 350);
+    } else {
+      s.classList.remove('active', 'fade-in');
+    }
+  });
+  state.currentScreen = name;
+
+  if (name === 'stickers') renderStickers();
+  if (name === 'parent') updateParentDashboard();
+}
+
+// ============================
+// SPLASH AUTO-ADVANCE
+// ============================
+setTimeout(() => {
+  if (state.currentScreen === 'splash') showScreen('signin');
+}, 2500);
+
+// ============================
+// SIGN IN / OTP
+// ============================
+function handleSendOTP() {
+  const phone = document.getElementById('phoneInput').value.trim();
+  if (!phone) {
+    showToast('Please enter a phone number');
+    return;
+  }
+  document.getElementById('otpSentTo').textContent = 'Code sent to +855 ' + phone;
+  showScreen('otp');
+  setTimeout(() => document.querySelector('.otp-box').focus(), 400);
+}
+
+// OTP auto-advance
+document.querySelectorAll('.otp-box').forEach((box, i, boxes) => {
+  box.addEventListener('input', (e) => {
+    if (e.target.value.length === 1 && i < 3) {
+      boxes[i + 1].focus();
+    }
+    // Check if all filled
+    const allFilled = Array.from(boxes).every(b => b.value.length === 1);
+    if (allFilled) {
+      verifyOTP();
+    }
+  });
+  box.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !e.target.value && i > 0) {
+      boxes[i - 1].focus();
+    }
+  });
+});
+
+function verifyOTP() {
+  const spinner = document.getElementById('otpSpinner');
+  spinner.classList.add('show');
+  setTimeout(() => {
+    spinner.classList.remove('show');
+    showScreen('home');
+  }, 1500);
+}
+
+// ============================
+// GRADE / ACTIVITY SELECTION
+// ============================
+function selectGrade(gradeName, topic, index) {
+  state.selectedGrade = gradeName;
+  state.gradeIndex = index;
+  document.getElementById('actHeader').style.background = GRADE_COLORS[index];
+  document.getElementById('actTitle').textContent = GRADE_TITLES[index].title;
+  document.getElementById('actGradeBadge').textContent = GRADE_TITLES[index].badge;
+  updateActivityProgress();
+  showScreen('activities');
+}
+
+function updateActivityProgress() {
+  const completed = state.sessionStats.activitiesCompleted;
+  const modes = ['Puzzle Mode', 'Fun Mode', 'Quiz Mode', 'Market Challenge'];
+  modes.forEach((mode, i) => {
+    const pfEl = document.getElementById('pf' + (i + 1));
+    const asEl = document.getElementById('as' + (i + 1));
+    if (pfEl && asEl) {
+      if (completed.includes(mode)) {
+        pfEl.style.width = '100%';
+        asEl.style.color = '#ecc94b';
+        asEl.textContent = '⭐⭐⭐';
+      }
+    }
+  });
+}
+
+// ============================
+// MATH ENGINE
+// ============================
+function generateQuestion(gradeIndex) {
+  let a, b, operator, answer, obj;
+
+  obj = OBJECTS[Math.floor(Math.random() * OBJECTS.length)];
+
+  switch (gradeIndex) {
+    case 0: // PreK counting
+      a = Math.floor(Math.random() * 8) + 1;
+      b = 0;
+      operator = '+';
+      answer = a;
+      break;
+    case 1: // Grade 1-2 addition/subtraction
+      if (Math.random() < 0.6) {
+        a = Math.floor(Math.random() * 9) + 1;
+        b = Math.floor(Math.random() * 9) + 1;
+        operator = '+';
+        answer = a + b;
+      } else {
+        a = Math.floor(Math.random() * 10) + 5;
+        b = Math.floor(Math.random() * Math.min(a, 9)) + 1;
+        operator = '−';
+        answer = a - b;
+      }
+      break;
+    case 2: // Grade 3-4 multiply/divide
+      if (Math.random() < 0.6) {
+        a = Math.floor(Math.random() * 9) + 2;
+        b = Math.floor(Math.random() * 9) + 2;
+        operator = '×';
+        answer = a * b;
+      } else {
+        b = Math.floor(Math.random() * 8) + 2;
+        answer = Math.floor(Math.random() * 9) + 2;
+        a = b * answer;
+        operator = '÷';
+      }
+      break;
+    case 3: // Grade 5 multi-step
+      a = Math.floor(Math.random() * 15) + 5;
+      b = Math.floor(Math.random() * 10) + 3;
+      operator = '+';
+      answer = a + b;
+      break;
+    default:
+      a = Math.floor(Math.random() * 9) + 1;
+      b = Math.floor(Math.random() * 9) + 1;
+      operator = '+';
+      answer = a + b;
+  }
+
+  // Generate distractors
+  const distractors = new Set();
+  distractors.add(answer);
+  while (distractors.size < 6) {
+    let d = answer + Math.floor(Math.random() * 7) - 3;
+    if (d < 0) d = Math.floor(Math.random() * 5) + 1;
+    if (d !== answer) distractors.add(d);
+  }
+
+  const options = Array.from(distractors);
+  // Shuffle
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+
+  return { a, b, operator, answer, options, obj };
+}
+
+function generateQuestions(gradeIndex, count) {
+  const qs = [];
+  for (let i = 0; i < count; i++) {
+    qs.push(generateQuestion(gradeIndex));
+  }
+  return qs;
+}
+
+// ============================
+// GAMEPLAY
+// ============================
+function startGame(activityName) {
+  state.activityName = activityName;
+  state.questions = generateQuestions(state.gradeIndex, 10);
+  state.questionIndex = 0;
+  state.score = 0;
+  state.wrongCount = 0;
+  state.startTime = Date.now();
+  state.answering = false;
+
+  showScreen('gameplay');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.questions[state.questionIndex];
+  const idx = state.questionIndex;
+
+  // Progress dots
+  const dotsHtml = state.questions.map((_, i) => {
+    let cls = 'dot';
+    if (i < idx) cls += ' done';
+    else if (i === idx) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+  document.getElementById('progressDots').innerHTML = dotsHtml;
+
+  // Speech bubble
+  const prompt = BILINGUAL_PROMPTS[Math.floor(Math.random() * BILINGUAL_PROMPTS.length)];
+  document.getElementById('speechBubble').innerHTML = prompt.km + '<br>' + prompt.en;
+
+  // Equation
+  if (state.gradeIndex === 0) {
+    // Counting: show objects and ask "how many?"
+    document.getElementById('equation').innerHTML = `How many? <span class="blank" id="blankAnswer"></span>`;
+  } else {
+    document.getElementById('equation').innerHTML =
+      `${q.a} ${q.operator} ${q.b} = <span class="blank" id="blankAnswer"></span>`;
+  }
+
+  // Objects row
+  let objHtml = '';
+  if (state.gradeIndex === 0) {
+    for (let i = 0; i < q.a; i++) objHtml += q.obj;
+  } else if (q.operator === '+') {
+    const showA = Math.min(q.a, 8);
+    const showB = Math.min(q.b, 8);
+    for (let i = 0; i < showA; i++) objHtml += q.obj;
+    objHtml += ' <span style="font-size:1.2rem;vertical-align:middle">➕</span> ';
+    for (let i = 0; i < showB; i++) objHtml += q.obj;
+  } else if (q.operator === '−') {
+    for (let i = 0; i < Math.min(q.a, 12); i++) objHtml += q.obj;
+  } else {
+    for (let i = 0; i < Math.min(q.a, 10); i++) objHtml += q.obj;
+  }
+  document.getElementById('objectsRow').innerHTML = objHtml;
+
+  // Answer buttons
+  const btnClasses = ['ab1', 'ab2', 'ab3', 'ab4', 'ab5', 'ab6'];
+  const gridHtml = q.options.map((opt, i) =>
+    `<button class="answer-btn ${btnClasses[i]}" onclick="checkAnswer(${opt}, this)">${opt}</button>`
+  ).join('');
+  document.getElementById('answerGrid').innerHTML = gridHtml;
+  state.answering = false;
+}
+
+function checkAnswer(value, btnEl) {
+  if (state.answering) return;
+  const q = state.questions[state.questionIndex];
+
+  if (value === q.answer) {
+    state.answering = true;
+    state.score++;
+    btnEl.classList.add('correct');
+    document.getElementById('blankAnswer').textContent = value;
+
+    // Flash
+    const flash = document.getElementById('celebFlash');
+    flash.classList.add('show');
+    setTimeout(() => flash.classList.remove('show'), 600);
+
+    // Character react
+    document.getElementById('speechBubble').innerHTML = '🎉 ពូកែណាស់!<br>Excellent!';
+
+    setTimeout(() => {
+      state.questionIndex++;
+      if (state.questionIndex >= state.questions.length) {
+        endGame();
+      } else {
+        renderQuestion();
+      }
+    }, 1000);
+  } else {
+    state.wrongCount++;
+    btnEl.classList.add('wrong');
+    document.getElementById('speechBubble').innerHTML = '🤔 សាកម្ដងទៀត!<br>Try again!';
+    setTimeout(() => btnEl.classList.remove('wrong'), 400);
+    btnEl.style.opacity = '0.5';
+    btnEl.style.pointerEvents = 'none';
+  }
+}
+
+function endGame() {
+  const elapsed = Date.now() - state.startTime;
+  const seconds = Math.floor(elapsed / 1000);
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;
+
+  const accuracy = (state.score / state.questions.length) * 100;
+  let stars, starsText;
+  if (accuracy >= 90) { stars = 3; starsText = '⭐⭐⭐'; }
+  else if (accuracy >= 70) { stars = 2; starsText = '⭐⭐'; }
+  else { stars = 1; starsText = '⭐'; }
+
+  // Update celebration screen
+  document.getElementById('starsRow').textContent = starsText;
+  document.getElementById('scoreCorrect').textContent = state.score;
+  document.getElementById('scoreWrong').textContent = state.questions.length - state.score;
+  document.getElementById('scoreTime').textContent = timeStr;
+  document.getElementById('celebSub').textContent = `You completed ${state.activityName}!`;
+
+  // Earn a sticker
+  const nextStickerIdx = state.stickers.length;
+  if (nextStickerIdx < ALL_STICKERS.length) {
+    const sticker = ALL_STICKERS[nextStickerIdx];
+    state.stickers.push(sticker);
+    document.getElementById('earnedStickerIcon').textContent = sticker.emoji;
+    document.getElementById('earnedStickerText').innerHTML = `New sticker earned!<br>${sticker.name}`;
+  }
+
+  // Update session stats
+  state.sessionStats.totalActivities++;
+  state.sessionStats.totalCorrect += state.score;
+  state.sessionStats.totalQuestions += state.questions.length;
+  state.sessionStats.totalTimeMs += elapsed;
+  if (!state.sessionStats.activitiesCompleted.includes(state.activityName)) {
+    state.sessionStats.activitiesCompleted.push(state.activityName);
+  }
+
+  showScreen('celebration');
+  spawnConfetti();
+}
+
+function finishCelebration() {
+  updateActivityProgress();
+  showScreen('activities');
+}
+
+// ============================
+// CONFETTI
+// ============================
+function spawnConfetti() {
+  const container = document.getElementById('confettiContainer');
+  container.innerHTML = '';
+  const colors = ['#667eea', '#ed8936', '#38a169', '#e53e3e', '#ecc94b', '#d53f8c', '#805ad5', '#63b3ed'];
+
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+    piece.style.animationDelay = (Math.random() * 1.5) + 's';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    container.appendChild(piece);
+  }
+}
+
+// ============================
+// PARENT DASHBOARD
+// ============================
+function updateParentDashboard() {
+  const s = state.sessionStats;
+  document.getElementById('statActivities').textContent = s.totalActivities;
+  document.getElementById('statActChange').textContent = s.totalActivities > 0 ? `↑ ${s.totalActivities} this session` : '';
+
+  const accuracy = s.totalQuestions > 0 ? Math.round((s.totalCorrect / s.totalQuestions) * 100) : 0;
+  document.getElementById('statAccuracy').textContent = accuracy + '%';
+
+  const totalMins = Math.round(s.totalTimeMs / 60000);
+  document.getElementById('statTime').textContent = totalMins + 'm';
+  document.getElementById('statStickers').textContent = state.stickers.length;
+
+  // Skill bars based on accuracy
+  const addPct = s.totalQuestions > 0 ? Math.min(accuracy + 10, 100) : 0;
+  document.getElementById('skillAdd').style.width = addPct + '%';
+  document.getElementById('skillAddPct').textContent = addPct + '%';
+
+  const subPct = Math.max(0, addPct - 20);
+  document.getElementById('skillSub').style.width = subPct + '%';
+  document.getElementById('skillSubPct').textContent = subPct + '%';
+
+  const mulPct = Math.max(0, addPct - 40);
+  document.getElementById('skillMul').style.width = mulPct + '%';
+  document.getElementById('skillMulPct').textContent = mulPct + '%';
+
+  const countPct = Math.min(addPct + 5, 100);
+  document.getElementById('skillCount').style.width = countPct + '%';
+  document.getElementById('skillCountPct').textContent = countPct + '%';
+}
+
+function switchChild(name) {
+  document.getElementById('chipSophea').classList.toggle('active', name === 'Sophea');
+  document.getElementById('chipDara').classList.toggle('active', name === 'Dara');
+
+  if (name === 'Dara') {
+    // Simulated data for Dara
+    document.getElementById('statActivities').textContent = '12';
+    document.getElementById('statAccuracy').textContent = '72%';
+    document.getElementById('statTime').textContent = '15m';
+    document.getElementById('statStickers').textContent = '3';
+    document.getElementById('skillAdd').style.width = '72%';
+    document.getElementById('skillAddPct').textContent = '72%';
+    document.getElementById('skillSub').style.width = '45%';
+    document.getElementById('skillSubPct').textContent = '45%';
+    document.getElementById('skillMul').style.width = '20%';
+    document.getElementById('skillMulPct').textContent = '20%';
+    document.getElementById('skillCount').style.width = '80%';
+    document.getElementById('skillCountPct').textContent = '80%';
+  } else {
+    updateParentDashboard();
+  }
+}
+
+// ============================
+// STICKERS
+// ============================
+function renderStickers() {
+  const grid = document.getElementById('stickerGrid');
+  grid.innerHTML = '';
+
+  ALL_STICKERS.forEach((sticker, i) => {
+    const earned = i < state.stickers.length;
+    const cell = document.createElement('div');
+    cell.className = 'sticker-cell' + (earned ? ' earned' : ' locked');
+    cell.innerHTML = `
+      <span class="sticker-emoji">${sticker.emoji}</span>
+      <span class="sticker-name">${sticker.name}</span>
+    `;
+    grid.appendChild(cell);
+  });
+
+  document.getElementById('stickerCount').textContent = `${state.stickers.length} of ${ALL_STICKERS.length} earned`;
+}
+
+// ============================
+// TOAST
+// ============================
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// Initial sticker render
+renderStickers();
+</script>
+
+</body>
+</html>

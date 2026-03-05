@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEM Play — Partner Presentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --primary: #667eea;
+    --primary-dark: #5a67d8;
+    --accent: #764ba2;
+    --orange: #ed8936;
+    --green: #38a169;
+    --red: #e53e3e;
+    --blue: #3182ce;
+    --dark: #2d3748;
+    --gray: #718096;
+    --light: #f7fafc;
+    --bg: #f0f4f8;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #1a1a2e;
+    color: var(--dark);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* Slide container */
+  .slides-wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .slide.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  /* Navigation */
+  .nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 56px;
+    background: rgba(26, 26, 46, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .nav-btn:hover { background: rgba(255,255,255,0.2); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .slide-counter {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  /* ============================== */
+  /* SLIDE STYLES                   */
+  /* ============================== */
+
+  /* Title slide */
+  .slide-title {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    text-align: center;
+  }
+
+  .slide-title .logo-circle {
+    width: 140px;
+    height: 140px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    margin-bottom: 30px;
+    border: 3px solid rgba(255,255,255,0.25);
+  }
+
+  .slide-title h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+
+  .slide-title .tagline {
+    font-size: 1.4rem;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .slide-title .subtitle-line {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 600;
+  }
+
+  .slide-title .partner-badge {
+    margin-top: 40px;
+    background: rgba(255,255,255,0.12);
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.75);
+    font-weight: 700;
+    backdrop-filter: blur(5px);
+  }
+
+  /* Content slides */
+  .slide-content {
+    background: var(--bg);
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 50px 80px 80px;
+  }
+
+  .slide-content .slide-header {
+    width: 100%;
+    margin-bottom: 36px;
+  }
+
+  .slide-content .slide-number {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .slide-content h2 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+
+  .slide-content h2 .emoji {
+    margin-right: 10px;
+  }
+
+  .slide-body {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    gap: 40px;
+  }
+
+  .slide-body.columns {
+    flex-direction: row;
+  }
+
+  .slide-body.single {
+    flex-direction: column;
+  }
+
+  .col { flex: 1; }
+  .col-wide { flex: 1.5; }
+
+  /* Cards */
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .card h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+
+  .card p, .card li {
+    font-size: 0.88rem;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  .card ul { padding-left: 18px; }
+  .card li { margin-bottom: 4px; }
+
+  .card .card-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  .card-accent {
+    border-left: 4px solid var(--primary);
+  }
+
+  .card-orange { border-left: 4px solid var(--orange); }
+  .card-green { border-left: 4px solid var(--green); }
+  .card-blue { border-left: 4px solid var(--blue); }
+  .card-red { border-left: 4px solid var(--red); }
+
+  /* Stat cards */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .stat-card .stat-num {
+    font-size: 2.8rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.82rem;
+    color: var(--gray);
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  /* Tables */
+  .slide-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    font-size: 0.85rem;
+  }
+
+  .slide-table th {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .slide-table td {
+    padding: 12px 18px;
+    border-bottom: 1px solid #edf2f7;
+    color: var(--dark);
+    font-weight: 600;
+  }
+
+  .slide-table tr:last-child td { border-bottom: none; }
+  .slide-table tr:nth-child(even) td { background: #f7fafc; }
+
+  /* Highlight boxes */
+  .highlight-box {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 20px;
+    padding: 28px;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .highlight-box h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .highlight-box p {
+    font-size: 0.88rem;
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+
+  /* Feature grid */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+  }
+
+  .feature-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .feature-card .f-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background: #f0f4ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-card h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+
+  .feature-card p {
+    font-size: 0.78rem;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  /* Timeline */
+  .timeline {
+    width: 100%;
+  }
+
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .timeline-phase {
+    width: 180px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--dark);
+    flex-shrink: 0;
+  }
+
+  .timeline-bar-bg {
+    flex: 1;
+    height: 36px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .timeline-bar {
+    height: 100%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .timeline-weeks {
+    width: 60px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--gray);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* Team grid */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+  }
+
+  .team-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .team-card .team-avatar {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+  }
+
+  .team-card h4 {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+
+  .team-card p {
+    font-size: 0.72rem;
+    color: var(--gray);
+    line-height: 1.4;
+  }
+
+  .team-card .ai-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-top: 6px;
+  }
+
+  /* End slide */
+  .slide-end {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    text-align: center;
+  }
+
+  .slide-end h2 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .slide-end p {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  .slide-end .cta-box {
+    margin-top: 40px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 24px 40px;
+    backdrop-filter: blur(5px);
+  }
+
+  .slide-end .cta-box h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .slide-end .cta-box p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* Bullet list styling */
+  .bullet-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .bullet-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: var(--dark);
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  .bullet-list .bullet {
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  /* Comparison highlight */
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .compare-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .compare-card.highlight {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+  }
+
+  .compare-card h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .compare-card.highlight h3 { color: #fff; }
+  .compare-card.highlight p, .compare-card.highlight li { color: rgba(255,255,255,0.9); }
+
+  .compare-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .compare-card li {
+    font-size: 0.82rem;
+    padding: 4px 0;
+    color: var(--gray);
+    font-weight: 600;
+  }
+
+  /* Phone mockup embed */
+  .phone-preview {
+    width: 220px;
+    height: 440px;
+    border-radius: 28px;
+    background: #1a1a2e;
+    padding: 8px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+
+  .phone-preview-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Print styles */
+  @media print {
+    .nav-bar { display: none; }
+    .slide {
+      display: flex !important;
+      opacity: 1 !important;
+      position: relative !important;
+      page-break-after: always;
+      min-height: 100vh;
+    }
+    body { background: #fff; overflow: visible; }
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .slide-content { padding: 30px 30px 70px; }
+    .slide-content h2 { font-size: 1.6rem; }
+    .slide-body.columns { flex-direction: column; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .feature-grid { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .slide-title h1 { font-size: 2.5rem; }
+    .comparison-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="slides-wrapper">
+
+  <!-- ============================== -->
+  <!-- SLIDE 1: TITLE                 -->
+  <!-- ============================== -->
+  <div class="slide slide-title active" data-slide="1">
+    <div class="logo-circle">🧒</div>
+    <h1>STEM Play</h1>
+    <div class="tagline">Cambodia's Kids' Math Learning App</div>
+    <div class="subtitle-line">Learn Math. Have Fun. រៀនគណិតវិទ្យា។ សប្បាយ។</div>
+    <div class="partner-badge">Partnership Presentation &mdash; Confidential</div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 2: THE OPPORTUNITY       -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="2">
+    <div class="slide-header">
+      <div class="slide-number">Slide 02</div>
+      <h2><span class="emoji">🎯</span>The Opportunity</h2>
+    </div>
+    <div class="slide-body columns">
+      <div class="col">
+        <div class="highlight-box">
+          <h3>The Gap</h3>
+          <p>Cambodian children lack engaging, age-appropriate educational apps in Khmer. Existing apps like Math Kids are English-only and culturally generic. There is no localized, curriculum-aligned math app for Cambodia's 3 million school-age children.</p>
+        </div>
+        <div class="card card-accent">
+          <h3>Why Now?</h3>
+          <ul>
+            <li>Smartphone penetration in Cambodia exceeds 80%</li>
+            <li>Parents actively seek educational content</li>
+            <li>Telco operators looking for value-added services</li>
+            <li>Government prioritizing digital education</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col">
+        <div class="stat-grid" style="grid-template-columns: 1fr;">
+          <div class="stat-card">
+            <div class="stat-num">3M+</div>
+            <div class="stat-label">School-age children in Cambodia</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">0</div>
+            <div class="stat-label">Khmer-first math learning apps</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">80%</div>
+            <div class="stat-label">Smartphone penetration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 3: WHAT IS STEM PLAY     -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="3">
+    <div class="slide-header">
+      <div class="slide-number">Slide 03</div>
+      <h2><span class="emoji">📱</span>What is STEM Play?</h2>
+    </div>
+    <div class="slide-body columns">
+      <div class="col-wide">
+        <div class="card">
+          <p style="font-size:1rem; color: var(--dark); font-weight: 700; line-height: 1.7;">
+            STEM Play is a mobile app that makes math fun for Cambodian kids ages 3–11. It features animated Cambodian characters, Khmer voice narration, culturally relevant activities (counting mangoes at the market!), and a game-based reward system — all designed to work offline on affordable phones.
+          </p>
+        </div>
+        <div class="feature-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="feature-card">
+            <div class="f-icon">🇰🇭</div>
+            <div>
+              <h4>Khmer-First</h4>
+              <p>Full Khmer text, voice-over, and cultural context</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">🎮</div>
+            <div>
+              <h4>Game-Based</h4>
+              <p>Interactive puzzles, quizzes, and challenges</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">📶</div>
+            <div>
+              <h4>Offline-First</h4>
+              <p>Works without internet — critical for rural areas</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">👨‍👩‍👧</div>
+            <div>
+              <h4>Parent Dashboard</h4>
+              <p>Progress tracking and learning insights</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col" style="display:flex;align-items:center;justify-content:center;">
+        <div class="phone-preview">
+          <div class="phone-preview-inner" style="background:linear-gradient(135deg, #667eea, #764ba2); align-items:center; justify-content:center; text-align:center; color:#fff;">
+            <div style="font-size:3rem; margin-bottom:12px;">🧒</div>
+            <div style="font-size:1.3rem; font-weight:900; letter-spacing:1px;">STEM Play</div>
+            <div style="font-size:0.65rem; opacity:0.8; margin-top:4px;">Learn Math. Have Fun.</div>
+            <div style="font-size:0.6rem; opacity:0.6; margin-top:3px;">រៀនគណិតវិទ្យា។</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 4: DIFFERENTIATION       -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="4">
+    <div class="slide-header">
+      <div class="slide-number">Slide 04</div>
+      <h2><span class="emoji">⚡</span>How We're Different</h2>
+    </div>
+    <div class="slide-body single">
+      <table class="slide-table">
+        <thead>
+          <tr>
+            <th>Aspect</th>
+            <th>Math Kids (Existing)</th>
+            <th>STEM Play (Ours)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Language</strong></td>
+            <td>English only</td>
+            <td>Khmer-first with English option</td>
+          </tr>
+          <tr>
+            <td><strong>Age Range</strong></td>
+            <td>4–7 (PreK–Grade 1)</td>
+            <td>3–11 (PreK–Grade 5)</td>
+          </tr>
+          <tr>
+            <td><strong>Cultural Context</strong></td>
+            <td>Generic Western</td>
+            <td>Cambodian characters, settings, festivals</td>
+          </tr>
+          <tr>
+            <td><strong>Curriculum</strong></td>
+            <td>US-centric</td>
+            <td>Aligned with Cambodia MoEYS standards</td>
+          </tr>
+          <tr>
+            <td><strong>Offline Support</strong></td>
+            <td>Requires internet</td>
+            <td>Offline-first (critical for rural Cambodia)</td>
+          </tr>
+          <tr>
+            <td><strong>Revenue Model</strong></td>
+            <td>Ads + IAP</td>
+            <td>Telco subscription bundle (no ads)</td>
+          </tr>
+          <tr>
+            <td><strong>Scope</strong></td>
+            <td>Math only</td>
+            <td>Math first, expanding to full STEM</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 5: CORE FEATURES         -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="5">
+    <div class="slide-header">
+      <div class="slide-number">Slide 05</div>
+      <h2><span class="emoji">✨</span>Core Features</h2>
+    </div>
+    <div class="slide-body single">
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="f-icon">🔢</div>
+          <div>
+            <h4>Counting & Number Recognition</h4>
+            <p>Count objects, match numbers to quantities, number tracing for PreK learners</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">➕</div>
+          <div>
+            <h4>Addition & Subtraction</h4>
+            <p>Puzzle mode, fun mode, quiz mode — visual objects make math tangible</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">✖️</div>
+          <div>
+            <h4>Multiplication & Division</h4>
+            <p>Visual grouping, times-table games, sharing/grouping for Grades 3-5</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">🧩</div>
+          <div>
+            <h4>Problem Solving</h4>
+            <p>Khmer-context word problems, number balance, patterns, and sequencing</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">🐘</div>
+          <div>
+            <h4>Animated Character Guide</h4>
+            <p>Cambodian characters with lip-synced Khmer speech guide every lesson</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">⭐</div>
+          <div>
+            <h4>Sticker & Reward System</h4>
+            <p>Earn collectible stickers, badges, and unlock new activities</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">🏮</div>
+          <div>
+            <h4>Seasonal Themes</h4>
+            <p>Khmer New Year, Water Festival — themed activities pushed remotely</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">📊</div>
+          <div>
+            <h4>Parent Dashboard</h4>
+            <p>Track progress, accuracy, time spent, and manage multiple children</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 6: APP SCREENS           -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="6">
+    <div class="slide-header">
+      <div class="slide-number">Slide 06</div>
+      <h2><span class="emoji">📲</span>App Experience</h2>
+    </div>
+    <div class="slide-body columns" style="justify-content:center; gap: 24px;">
+      <!-- Phone 1: Home -->
+      <div style="text-align:center;">
+        <div class="phone-preview">
+          <div class="phone-preview-inner" style="background:#f0f4ff;">
+            <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:28px 14px 12px;color:#fff;">
+              <div style="font-size:0.6rem;opacity:0.8;">Hello! សួស្តី</div>
+              <div style="font-size:0.85rem;font-weight:800;">Sophea 🌟</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#764ba2,#5b21b6);padding:10px 14px;display:flex;align-items:center;gap:8px;color:#fff;">
+              <div style="font-size:1.4rem;">🐘</div>
+              <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:6px 10px;font-size:0.5rem;font-weight:600;">Let's count today!<br>តោះរាប់ជាមួយគ្នា!</div>
+            </div>
+            <div style="padding:10px;flex:1;">
+              <div style="font-size:0.5rem;font-weight:800;color:#4a5568;margin-bottom:6px;">CHOOSE YOUR LEVEL</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                <div style="background:linear-gradient(135deg,#f6ad55,#ed8936);border-radius:10px;padding:10px 6px;text-align:center;">
+                  <div style="font-size:1rem;">🔢</div>
+                  <div style="font-size:0.5rem;font-weight:800;color:#fff;">PreK</div>
+                </div>
+                <div style="background:linear-gradient(135deg,#68d391,#38a169);border-radius:10px;padding:10px 6px;text-align:center;">
+                  <div style="font-size:1rem;">➕</div>
+                  <div style="font-size:0.5rem;font-weight:800;color:#fff;">Grade 1-2</div>
+                </div>
+                <div style="background:linear-gradient(135deg,#63b3ed,#3182ce);border-radius:10px;padding:10px 6px;text-align:center;">
+                  <div style="font-size:1rem;">✖️</div>
+                  <div style="font-size:0.5rem;font-weight:800;color:#fff;">Grade 3-4</div>
+                </div>
+                <div style="background:linear-gradient(135deg,#fc8181,#e53e3e);border-radius:10px;padding:10px 6px;text-align:center;">
+                  <div style="font-size:1rem;">🧩</div>
+                  <div style="font-size:0.5rem;font-weight:800;color:#fff;">Grade 5</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gray);margin-top:10px;">Home</div>
+      </div>
+      <!-- Phone 2: Gameplay -->
+      <div style="text-align:center;">
+        <div class="phone-preview">
+          <div class="phone-preview-inner" style="background:linear-gradient(180deg,#ebf4ff,#c3dafe);">
+            <div style="padding:24px 10px 6px;display:flex;gap:3px;justify-content:center;">
+              <div style="width:7px;height:7px;border-radius:50%;background:#68d391;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#68d391;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#68d391;"></div>
+              <div style="width:8px;height:8px;border-radius:50%;background:#667eea;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#cbd5e0;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#cbd5e0;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#cbd5e0;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#cbd5e0;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#cbd5e0;"></div>
+              <div style="width:7px;height:7px;border-radius:50%;background:#cbd5e0;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;">
+              <div style="width:32px;height:32px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;">🐘</div>
+              <div style="background:#fff;border-radius:10px;padding:6px 8px;font-size:0.45rem;font-weight:700;color:#4a5568;">រាប់ស្វាយទាំងអស់!<br>Count the mangoes!</div>
+            </div>
+            <div style="background:#fff;border-radius:14px;padding:14px;margin:6px 12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+              <div style="font-size:1.6rem;font-weight:900;color:#2d3748;">3 + 4 = <span style="display:inline-block;width:28px;height:28px;border:2px dashed #667eea;border-radius:8px;vertical-align:middle;background:#ebf4ff;"></span></div>
+              <div style="font-size:1rem;margin-top:8px;">🥭🥭🥭 ➕ 🥭🥭🥭🥭</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:6px 12px;">
+              <div style="background:linear-gradient(135deg,#f6ad55,#ed8936);border-radius:10px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.9rem;">5</div>
+              <div style="background:linear-gradient(135deg,#68d391,#38a169);border-radius:10px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.9rem;">7</div>
+              <div style="background:linear-gradient(135deg,#63b3ed,#3182ce);border-radius:10px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.9rem;">6</div>
+              <div style="background:linear-gradient(135deg,#fc8181,#e53e3e);border-radius:10px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.9rem;">8</div>
+              <div style="background:linear-gradient(135deg,#b794f4,#805ad5);border-radius:10px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.9rem;">9</div>
+              <div style="background:linear-gradient(135deg,#f687b3,#d53f8c);border-radius:10px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.9rem;">4</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gray);margin-top:10px;">Gameplay</div>
+      </div>
+      <!-- Phone 3: Celebration -->
+      <div style="text-align:center;">
+        <div class="phone-preview">
+          <div class="phone-preview-inner" style="background:linear-gradient(135deg,#fefcbf,#faf089,#f6e05e);align-items:center;justify-content:center;text-align:center;">
+            <div style="font-size:1.8rem;letter-spacing:6px;">⭐⭐⭐</div>
+            <div style="font-size:2.5rem;margin:8px 0;">🏆</div>
+            <div style="font-size:1rem;font-weight:900;color:#744210;">Excellent!</div>
+            <div style="font-size:0.6rem;color:#975a16;font-weight:600;margin-top:2px;">ពូកែណាស់!</div>
+            <div style="background:#fff;border-radius:14px;padding:12px 18px;margin:12px 16px;display:flex;gap:16px;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+              <div style="text-align:center;"><div style="font-size:1.2rem;font-weight:900;color:#667eea;">10</div><div style="font-size:0.45rem;color:#718096;font-weight:700;">Correct</div></div>
+              <div style="text-align:center;"><div style="font-size:1.2rem;font-weight:900;color:#667eea;">0</div><div style="font-size:0.45rem;color:#718096;font-weight:700;">Wrong</div></div>
+              <div style="text-align:center;"><div style="font-size:1.2rem;font-weight:900;color:#667eea;">2:34</div><div style="font-size:0.45rem;color:#718096;font-weight:700;">Time</div></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.5);border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:6px;">
+              <span style="font-size:1.2rem;">🦁</span>
+              <span style="font-size:0.5rem;font-weight:700;color:#744210;">New sticker earned!</span>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gray);margin-top:10px;">Celebration</div>
+      </div>
+      <!-- Phone 4: Parent -->
+      <div style="text-align:center;">
+        <div class="phone-preview">
+          <div class="phone-preview-inner" style="background:#f7fafc;">
+            <div style="background:linear-gradient(135deg,#2d3748,#4a5568);padding:28px 14px 12px;color:#fff;">
+              <div style="font-size:0.8rem;font-weight:800;">👨‍👩‍👧 Parent Dashboard</div>
+              <div style="font-size:0.5rem;opacity:0.6;margin-top:2px;">Track learning progress</div>
+            </div>
+            <div style="display:flex;gap:6px;padding:8px 10px;background:#fff;border-bottom:1px solid #e2e8f0;">
+              <div style="background:#667eea;color:#fff;padding:4px 10px;border-radius:12px;font-size:0.5rem;font-weight:700;">👧 Sophea</div>
+              <div style="background:#edf2f7;padding:4px 10px;border-radius:12px;font-size:0.5rem;font-weight:700;color:#4a5568;">👦 Dara</div>
+            </div>
+            <div style="padding:8px 10px;flex:1;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+                <div style="background:#fff;border-radius:10px;padding:8px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+                  <div style="font-size:1rem;font-weight:900;color:#2d3748;">47</div>
+                  <div style="font-size:0.4rem;color:#a0aec0;font-weight:700;">Activities Done</div>
+                </div>
+                <div style="background:#fff;border-radius:10px;padding:8px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+                  <div style="font-size:1rem;font-weight:900;color:#2d3748;">85%</div>
+                  <div style="font-size:0.4rem;color:#a0aec0;font-weight:700;">Accuracy</div>
+                </div>
+              </div>
+              <div style="font-size:0.45rem;font-weight:800;color:#4a5568;margin-bottom:4px;">SKILL PROGRESS</div>
+              <div style="background:#fff;border-radius:8px;padding:6px 8px;margin-bottom:4px;display:flex;align-items:center;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+                <span style="font-size:0.45rem;font-weight:700;flex:1;">Addition</span>
+                <div style="width:50px;height:4px;background:#edf2f7;border-radius:2px;overflow:hidden;"><div style="width:85%;height:100%;background:#68d391;border-radius:2px;"></div></div>
+                <span style="font-size:0.45rem;font-weight:800;">85%</span>
+              </div>
+              <div style="background:#fff;border-radius:8px;padding:6px 8px;margin-bottom:4px;display:flex;align-items:center;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+                <span style="font-size:0.45rem;font-weight:700;flex:1;">Subtraction</span>
+                <div style="width:50px;height:4px;background:#edf2f7;border-radius:2px;overflow:hidden;"><div style="width:60%;height:100%;background:#63b3ed;border-radius:2px;"></div></div>
+                <span style="font-size:0.45rem;font-weight:800;">60%</span>
+              </div>
+              <div style="background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;padding:8px;color:#fff;margin-top:8px;">
+                <div style="font-size:0.5rem;font-weight:800;">✓ Active Subscription</div>
+                <div style="font-size:0.4rem;opacity:0.8;">[Telco Partner] Family Plan</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gray);margin-top:10px;">Parent Dashboard</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 7: TELCO PARTNERSHIP     -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="7">
+    <div class="slide-header">
+      <div class="slide-number">Slide 07</div>
+      <h2><span class="emoji">🤝</span>Telco Partnership Model</h2>
+    </div>
+    <div class="slide-body columns">
+      <div class="col">
+        <div class="highlight-box">
+          <h3>How It Works</h3>
+          <p>STEM Play is bundled into the telco's family/education subscription tier. Parents subscribe via their phone account — no credit card needed. Billing is handled entirely by the operator.</p>
+        </div>
+        <div class="card card-accent">
+          <h3>Subscription Flow</h3>
+          <ul>
+            <li>Phone-number OTP sign-in (scoped to partner operator)</li>
+            <li>Automatic billing via telco account</li>
+            <li>Subscription management in parent dashboard</li>
+            <li>Graceful degradation on expiry (no harsh lock-out)</li>
+          </ul>
+        </div>
+        <div class="card card-green">
+          <h3>Post-Exclusivity</h3>
+          <p>After the locked period, the app opens to other operators or offers direct subscriptions — expanding the user base while maintaining the partnership.</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card card-orange">
+          <div class="card-icon">📈</div>
+          <h3>Value for Telco Partner</h3>
+          <ul>
+            <li>Unique family-friendly value-add service</li>
+            <li>Subscriber retention & reduced churn</li>
+            <li>CSR positioning in education</li>
+            <li>Revenue share from subscription fees</li>
+            <li>Brand visibility in a growing market segment</li>
+            <li>Data insights on family digital engagement</li>
+          </ul>
+        </div>
+        <div class="card card-blue">
+          <div class="card-icon">🛡️</div>
+          <h3>TRC Alignment</h3>
+          <ul>
+            <li>Promotes digital literacy goals</li>
+            <li>Child-safe: no ads, no data collection</li>
+            <li>Supports national education priorities</li>
+            <li>Khmer-language content development</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 8: TECHNOLOGY            -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="8">
+    <div class="slide-header">
+      <div class="slide-number">Slide 08</div>
+      <h2><span class="emoji">⚙️</span>Technology Stack</h2>
+    </div>
+    <div class="slide-body single">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; width:100%;">
+        <div class="card card-accent">
+          <h3>📱 Mobile App</h3>
+          <ul>
+            <li><strong>Flutter</strong> — cross-platform (iOS + Android)</li>
+            <li><strong>Rive</strong> — interactive character animation</li>
+            <li><strong>Lottie</strong> — UI animations & rewards</li>
+            <li><strong>Drift (SQLite)</strong> — offline data storage</li>
+            <li><strong>Firebase</strong> — auth, sync, analytics</li>
+          </ul>
+        </div>
+        <div class="card card-green">
+          <h3>🖥️ Backend</h3>
+          <ul>
+            <li><strong>Django</strong> — admin dashboard & API</li>
+            <li><strong>PostgreSQL</strong> — relational database</li>
+            <li><strong>Firebase Firestore</strong> — real-time sync</li>
+            <li><strong>CDN</strong> — content delivery</li>
+            <li><strong>Telco API</strong> — billing integration</li>
+          </ul>
+        </div>
+        <div class="card card-blue">
+          <h3>🎨 Animation & Audio</h3>
+          <ul>
+            <li><strong>Rive State Machines</strong> — character reactions</li>
+            <li><strong>Rhubarb Lip Sync</strong> — mouth animation</li>
+            <li><strong>Pre-recorded Khmer</strong> — voice narration</li>
+            <li><strong>AAC 64kbps</strong> — optimized audio</li>
+          </ul>
+        </div>
+        <div class="card card-orange">
+          <h3>🤖 AI-Augmented Development</h3>
+          <ul>
+            <li><strong>Claude Code</strong> — AI coding agent</li>
+            <li>Generates app code, tests, CI/CD pipelines</li>
+            <li>Enables lean team (4–5 people vs. 8–10)</li>
+            <li>Faster iteration cycles</li>
+          </ul>
+        </div>
+      </div>
+      <div class="highlight-box" style="width:100%; margin-top:16px;">
+        <h3>Why These Choices Matter</h3>
+        <p>Flutter + Rive = smooth animation on $80 Android phones. Offline-first architecture = works without internet. Data-driven content = update activities without app store releases. AI-augmented dev = ship in 6 months with a lean team.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 9: TEAM                  -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="9">
+    <div class="slide-header">
+      <div class="slide-number">Slide 09</div>
+      <h2><span class="emoji">👥</span>Team Composition</h2>
+    </div>
+    <div class="slide-body single">
+      <div class="team-grid" style="grid-template-columns: repeat(5, 1fr);">
+        <div class="team-card">
+          <div class="team-avatar">👔</div>
+          <h4>Product Lead</h4>
+          <p>Vision, stakeholder management, telco liaison, sprint planning</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">💻</div>
+          <h4>Full-Stack Dev</h4>
+          <p>Flutter app, Django backend, Firebase, CI/CD pipeline</p>
+          <div class="ai-badge">AI-Augmented with Claude Code</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">🎨</div>
+          <h4>Rive Animator</h4>
+          <p>Character design, animation state machines, seasonal skins</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">🖌️</div>
+          <h4>UI/UX Designer</h4>
+          <p>App design, child UX, Lottie animations, accessibility</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">🇰🇭</div>
+          <h4>Content Lead</h4>
+          <p>Khmer content, voice recording, curriculum alignment</p>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; margin-top: 20px;">
+        <div class="card card-accent">
+          <h3>AI-Augmented Advantage</h3>
+          <p>Using Claude Code for code generation, testing, and deployment pipeline reduces the engineering team from 3–4 developers to 1 senior developer. This means faster iteration, lower costs, and consistent code quality — while the team focuses on design, content, and user experience.</p>
+        </div>
+        <div class="card card-green">
+          <h3>Part-Time Support</h3>
+          <ul>
+            <li>QA Tester — pre-launch device testing</li>
+            <li>Sound Designer — SFX and music production</li>
+            <li>Pedagogical Advisor — curriculum review</li>
+            <li>DevOps — infrastructure setup (contract)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 10: TIMELINE             -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="10">
+    <div class="slide-header">
+      <div class="slide-number">Slide 10</div>
+      <h2><span class="emoji">📅</span>Timeline — Phase 1 (Math)</h2>
+    </div>
+    <div class="slide-body single">
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="timeline-phase">Discovery & Design</div>
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar" style="width:17%; background: linear-gradient(90deg, #667eea, #764ba2);">Design</div>
+          </div>
+          <div class="timeline-weeks">4 wks</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-phase">Asset Production</div>
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar" style="width:17%; margin-left:10%; background: linear-gradient(90deg, #f6ad55, #ed8936);">Assets</div>
+          </div>
+          <div class="timeline-weeks">4 wks</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-phase">Dev Sprint 1–3</div>
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar" style="width:26%; margin-left:20%; background: linear-gradient(90deg, #68d391, #38a169);">Core App</div>
+          </div>
+          <div class="timeline-weeks">6 wks</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-phase">Dev Sprint 4–5</div>
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar" style="width:17%; margin-left:46%; background: linear-gradient(90deg, #63b3ed, #3182ce);">Grade 3-5 + Billing</div>
+          </div>
+          <div class="timeline-weeks">4 wks</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-phase">Testing & Polish</div>
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar" style="width:13%; margin-left:63%; background: linear-gradient(90deg, #fc8181, #e53e3e);">QA</div>
+          </div>
+          <div class="timeline-weeks">3 wks</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-phase">Soft Launch</div>
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar" style="width:9%; margin-left:76%; background: linear-gradient(90deg, #b794f4, #805ad5);">Beta</div>
+          </div>
+          <div class="timeline-weeks">2 wks</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-phase">🚀 Launch</div>
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar" style="width:6%; margin-left:87%; background: linear-gradient(90deg, #ecc94b, #d69e2e);">Go!</div>
+          </div>
+          <div class="timeline-weeks"></div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; width:100%; margin-top: 24px;">
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:2rem;">~6</div>
+          <div class="stat-label">Months to Launch</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:2rem;">4–5</div>
+          <div class="stat-label">Core Team Members</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="font-size:2rem;">2</div>
+          <div class="stat-label">Platforms (iOS + Android)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 11: FUTURE VISION        -->
+  <!-- ============================== -->
+  <div class="slide slide-content" data-slide="11">
+    <div class="slide-header">
+      <div class="slide-number">Slide 11</div>
+      <h2><span class="emoji">🚀</span>Future Roadmap</h2>
+    </div>
+    <div class="slide-body columns">
+      <div class="col">
+        <div class="card card-accent" style="padding:20px;">
+          <h3>Phase 1 — Mathematics</h3>
+          <p>PreK–Grade 5 math: counting, addition, subtraction, multiplication, division, problem solving</p>
+        </div>
+        <div class="card card-green" style="padding:20px;">
+          <h3>Phase 2 — Science</h3>
+          <p>Animal classification, plant life cycles, simple experiments</p>
+        </div>
+        <div class="card card-blue" style="padding:20px;">
+          <h3>Phase 3 — Technology</h3>
+          <p>Basic coding logic, sequencing, loops, digital literacy</p>
+        </div>
+        <div class="card card-orange" style="padding:20px;">
+          <h3>Phase 4 — Engineering</h3>
+          <p>Building challenges, bridge puzzles, simple machines</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="highlight-box">
+          <h3>Seasonal Content Engine</h3>
+          <p>Khmer New Year, Water Festival, Pchum Ben — themed activities and character costumes pushed remotely without app updates. Keeps the experience fresh and culturally connected.</p>
+        </div>
+        <div class="card">
+          <h3>Growth Levers</h3>
+          <ul>
+            <li>Multi-operator expansion post-exclusivity</li>
+            <li>School & NGO distribution partnerships</li>
+            <li>Additional language support</li>
+            <li>Adaptive difficulty using learning analytics</li>
+            <li>Teacher tools and classroom mode</li>
+            <li>Pre-installation on telco-branded devices</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- SLIDE 12: CLOSING              -->
+  <!-- ============================== -->
+  <div class="slide slide-end" data-slide="12">
+    <div style="font-size:5rem; margin-bottom:20px;">🧒🐘</div>
+    <h2>Let's build Cambodia's future<br>— one math problem at a time.</h2>
+    <p>STEM Play combines joyful learning, Cambodian culture, and smart technology to give every child a strong start in STEM.</p>
+    <div class="cta-box">
+      <h3>Next Steps</h3>
+      <p>Partnership terms &bull; Technical integration planning &bull; Pilot program design</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>← Previous</button>
+  <span class="slide-counter" id="slideCounter">1 / 12</span>
+  <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 12;
+
+  function showSlide(n) {
+    document.querySelectorAll('.slide').forEach(s => {
+      s.classList.remove('active');
+    });
+    const target = document.querySelector(`[data-slide="${n}"]`);
+    if (target) {
+      target.classList.add('active');
+      currentSlide = n;
+      document.getElementById('slideCounter').textContent = `${n} / ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = n === 1;
+      document.getElementById('nextBtn').disabled = n === totalSlides;
+    }
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) showSlide(currentSlide - 1);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      e.preventDefault();
+      prevSlide();
+    }
+  });
+
+  // Touch swipe support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+    }
+  });
+</script>
+
+</body>
+</html>
