@@ -1,8 +1,8 @@
-# Concept Note: STEM Play — A Cambodian Kids' Learning App
+# Concept Note: Domrey STEM (ដំរី) — A Cambodian Kids' Learning App
 
 ## 1. Introduction
 
-STEM Play is a mobile learning app designed for Cambodian children from preschool through Grade 5 (ages 3–11). The app makes foundational mathematics fun and accessible through interactive, game-based activities — and is built to expand into Science, Technology, and Engineering in future phases.
+Domrey STEM is a mobile learning app designed for Cambodian children from preschool through Grade 5 (ages 3–11). The app makes foundational mathematics fun and accessible through interactive, game-based activities — and is built to expand into Science, Technology, and Engineering in future phases.
 
 The concept is inspired by [Math Kids — Add, Subtract, Count](https://apps.apple.com/kh/app/math-kids-add-subtract-count/id1272098657), a highly rated (4.6/5) free app targeting ages 4+ with character-driven math games, sticker rewards, and parental progress tracking.
 
@@ -63,7 +63,7 @@ Drawing from Math Kids' proven activity types and extending them for a wider age
 
 ## 6. Differentiation from Math Kids
 
-| Aspect | Math Kids | STEM Play |
+| Aspect | Math Kids | Domrey STEM |
 |--------|-----------|-----------|
 | Language | English only | Khmer-first, with English option |
 | Age range | 4–7 (PreK–Grade 1) | 3–11 (PreK–Grade 5) |
@@ -130,10 +130,10 @@ Each phase follows the same play-based, Khmer-first design principles.
 
 ### Commercial Model: Telco Partnership
 
-The primary monetization strategy is a **partnership with a local Cambodian mobile operator**. STEM Play is bundled into the telco's subscription plans, providing a sustainable revenue stream while keeping the app accessible to families.
+The primary monetization strategy is a **partnership with a local Cambodian mobile operator**. Domrey STEM is bundled into the telco's subscription plans, providing a sustainable revenue stream while keeping the app accessible to families.
 
 - **Subscription bundle**: The app is offered as part of the telco's family/education subscription tier. Parents subscribe via their phone account — no credit card needed, billing is handled by the operator.
-- **Exclusivity period**: During the initial partnership, sign-in is scoped to the partner operator's phone numbers. This gives the telco a value-add for their subscribers and provides STEM Play with a guaranteed distribution channel.
+- **Exclusivity period**: During the initial partnership, sign-in is scoped to the partner operator's phone numbers. This gives the telco a value-add for their subscribers and provides Domrey STEM with a guaranteed distribution channel.
 - **Post-exclusivity**: After the locked period, the app may open to other operators or offer direct subscriptions.
 - **Billing integration**: The app's backend integrates with the telco's billing API to handle subscription activation, renewal, cancellation, and grace periods. No in-app purchase through Apple/Google is needed during the telco-exclusive phase.
 

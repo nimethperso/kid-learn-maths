@@ -1,7 +1,7 @@
-# Technical Implementation Guide: STEM Play
+# Technical Implementation Guide: Domrey STEM
 
 > **Companion document to [concept-note.md](./concept-note.md)**
-> This guide explains the technical approaches behind character animation, audio narration, sound design, offline-first architecture, and telco subscription integration for STEM Play. It is written for developers and decision-makers who may be new to building kids' educational apps.
+> This guide explains the technical approaches behind character animation, audio narration, sound design, offline-first architecture, and telco subscription integration for Domrey STEM. It is written for developers and decision-makers who may be new to building kids' educational apps.
 
 ---
 
@@ -39,7 +39,7 @@ The concept note calls for "original Cambodian characters that guide, encourage,
 
 - **How it works**: A designer creates a character in the [Rive Editor](https://rive.app) (free tier available). The character's body parts are arranged on a skeleton. The designer then builds a **state machine** — a flowchart of animation states like `idle`, `talking`, `celebrating`, `thinking`. In Flutter code, you trigger transitions between states (e.g., when the child answers correctly, transition from `idle` to `celebrating`).
 - **Why Rive**: First-class Flutter support via the `rive` package; `.riv` files are typically 20–80 KB per character; state machines let one file contain dozens of animation states; supports runtime color/skin changes so you can reuse the same skeleton for multiple characters.
-- **Shared skeletons and skins**: Design one base skeleton (body proportions, bone structure). Then create **skins** — different hair, clothing, skin tones — on the same skeleton. This means all characters share the same animation set, drastically reducing work and file size. For STEM Play's Cambodian characters, you might have 3–4 skins on one skeleton: a boy, a girl, a teacher, and a mascot animal.
+- **Shared skeletons and skins**: Design one base skeleton (body proportions, bone structure). Then create **skins** — different hair, clothing, skin tones — on the same skeleton. This means all characters share the same animation set, drastically reducing work and file size. For Domrey STEM's Cambodian characters, you might have 3–4 skins on one skeleton: a boy, a girl, a teacher, and a mascot animal.
 
 **Lottie** for UI micro-animations and rewards:
 
@@ -304,7 +304,7 @@ The app is **local-first**: all writes go to the local database immediately. Whe
 
 ### Content Updates Without App Store Releases
 
-Activities in STEM Play are **data-driven**: each activity is defined by a JSON/YAML manifest that specifies the activity type, numbers involved, voice clips to play, and animations to trigger. This means you can add new activities or fix content bugs by pushing a new content pack to the CDN — no app update required.
+Activities in Domrey STEM are **data-driven**: each activity is defined by a JSON/YAML manifest that specifies the activity type, numbers involved, voice clips to play, and animations to trigger. This means you can add new activities or fix content bugs by pushing a new content pack to the CDN — no app update required.
 
 ```json
 {
@@ -370,7 +370,7 @@ For the concept note's "direct APK distribution for schools without Play Store a
 
 ## 7. Admin Backend & Content Management
 
-The mobile app is offline-first and talks directly to Firebase for progress sync. However, managing content packs, seasonal character themes, and challenge difficulty requires an **admin dashboard** — a separate web application used by the STEM Play team (not end users).
+The mobile app is offline-first and talks directly to Firebase for progress sync. However, managing content packs, seasonal character themes, and challenge difficulty requires an **admin dashboard** — a separate web application used by the Domrey STEM team (not end users).
 
 ### Why an Admin Backend Is Needed
 
@@ -464,20 +464,250 @@ class ContentPack(models.Model):
     published_at = models.DateTimeField(null=True, blank=True)
 ```
 
-#### Seasonal Character Themes
+#### Seasonal Themes — Festival & Event System
+
+Cambodia has several major cultural events throughout the year. The admin must be able to design, preview, and activate themed experiences for each — changing character costumes, environment decorations, welcome messages, and voice narrations — all from the Django admin console.
+
+**Cambodian Festival Calendar (recurring annually):**
+
+| Festival | Typical Dates | Theme Elements |
+|----------|--------------|----------------|
+| **Khmer New Year** (ចូលឆ្នាំថ្មី) | Apr 13–16 | Lanterns, lotus flowers, pagoda settings, traditional costumes |
+| **Pchum Ben** (ភ្ជុំបិណ្ឌ) | Sep–Oct (lunar) | Pagoda offerings, candles, rice cakes, respectful/gentle tone |
+| **Water Festival** (បុណ្យអុំទូក) | Nov (lunar) | Boat races, river scenes, festive colors, fireworks |
+| **Chinese New Year** | Jan–Feb (lunar) | Red & gold decorations, dragon/lion dance, family gatherings |
+| **International Children's Day** | Jun 1 | Playful extra content, special stickers, celebration |
+| **Independence Day** | Nov 9 | National colors, flags, patriotic elements |
+
+**Django Models:**
 
 ```python
-class Theme(models.Model):
-    name = models.CharField(max_length=200)            # "Khmer New Year 2027"
-    rive_file = models.FileField(upload_to='themes/')  # Character .riv with themed skin
-    background_asset = models.FileField(upload_to='themes/')
-    active_from = models.DateTimeField()               # Apr 13, 2027
-    active_until = models.DateTimeField()              # Apr 16, 2027
-    is_active = models.BooleanField(default=False)     # Manual override
-    priority = models.IntegerField(default=0)          # Higher = takes precedence
+class FestivalEvent(models.Model):
+    """Defines a recurring cultural event (e.g., Khmer New Year happens every year)."""
+    name = models.CharField(max_length=200)            # "Khmer New Year"
+    name_km = models.CharField(max_length=200)         # "ចូលឆ្នាំថ្មី"
+    description = models.TextField(blank=True)
+    icon_emoji = models.CharField(max_length=10)       # "🏮"
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.icon_emoji} {self.name}"
+
+
+class SeasonalTheme(models.Model):
+    """A specific themed experience for a festival event in a given year."""
+    class Status(models.TextChoices):
+        DRAFT = 'draft'            # Being designed
+        READY = 'ready'            # Assets complete, awaiting activation
+        ACTIVE = 'active'          # Currently live in the app
+        ARCHIVED = 'archived'      # Past event, no longer active
+
+    event = models.ForeignKey(FestivalEvent, on_delete=models.CASCADE)
+    year = models.IntegerField()                       # 2027
+    status = models.CharField(max_length=20, choices=Status.choices, default='draft')
+
+    # Schedule
+    active_from = models.DateTimeField()               # Apr 13, 2027 00:00
+    active_until = models.DateTimeField()              # Apr 16, 2027 23:59
+    auto_activate = models.BooleanField(default=False) # Auto-activate on active_from
+    activated_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL)
+    activated_at = models.DateTimeField(null=True, blank=True)
+
+    # Welcome & messaging
+    welcome_title = models.CharField(max_length=200)         # "Happy New Year!"
+    welcome_title_km = models.CharField(max_length=200)      # "សួស្តីឆ្នាំថ្មី!"
+    welcome_message = models.TextField(blank=True)           # Shown on home screen
+    welcome_message_km = models.TextField(blank=True)
+
+    # Visual theming
+    primary_color = models.CharField(max_length=7, default='#fbbf24')    # Hex color
+    secondary_color = models.CharField(max_length=7, default='#f59e0b')
+    background_gradient = models.JSONField(default=dict)                 # {"start": "#fbbf24", "end": "#fff7ed"}
+    banner_image = models.FileField(upload_to='themes/banners/', blank=True)
+
+    # Priority (if two themes overlap, higher wins)
+    priority = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['event', 'year']
+        ordering = ['-year', '-priority']
+
+    def __str__(self):
+        return f"{self.event.name} {self.year} [{self.status}]"
+
+
+class ThemeCharacterCostume(models.Model):
+    """A themed costume/skin for a character during a festival."""
+    theme = models.ForeignKey(SeasonalTheme, on_delete=models.CASCADE, related_name='costumes')
+    character_name = models.CharField(max_length=100)          # "Domrey", "Neary", "Rithy"
+    rive_skin_name = models.CharField(max_length=100)          # Skin ID in the .riv file
+    rive_file = models.FileField(upload_to='themes/characters/', blank=True)  # Override .riv if needed
+    preview_image = models.ImageField(upload_to='themes/previews/', blank=True)
+    description = models.CharField(max_length=200, blank=True) # "Domrey in sampot and krama"
+
+    def __str__(self):
+        return f"{self.character_name} — {self.theme}"
+
+
+class ThemeEnvironment(models.Model):
+    """Decorative elements and background assets for a theme."""
+    theme = models.ForeignKey(SeasonalTheme, on_delete=models.CASCADE, related_name='environments')
+    screen = models.CharField(max_length=50)                   # "home", "gameplay", "celebration"
+    background_asset = models.FileField(upload_to='themes/backgrounds/')
+    decoration_overlay = models.FileField(upload_to='themes/decorations/', blank=True)
+    lottie_effect = models.FileField(upload_to='themes/lottie/', blank=True)  # e.g., floating lanterns
+    description = models.CharField(max_length=200, blank=True)
+
+
+class ThemeVoiceLine(models.Model):
+    """Festival-specific voice narration clips."""
+    theme = models.ForeignKey(SeasonalTheme, on_delete=models.CASCADE, related_name='voice_lines')
+    line_type = models.CharField(max_length=50)                # "welcome", "encouragement", "celebration"
+    text = models.TextField()                                  # "Happy New Year! Let's count lanterns!"
+    text_km = models.TextField()                               # Khmer version
+    audio_file = models.FileField(upload_to='themes/voice/')   # Themed voice clip
+    character = models.CharField(max_length=100, default='Domrey')
+
+    def __str__(self):
+        return f"[{self.line_type}] {self.text[:50]}"
+
+
+class ThemeActivity(models.Model):
+    """Special themed activities available only during the festival."""
+    theme = models.ForeignKey(SeasonalTheme, on_delete=models.CASCADE, related_name='activities')
+    name = models.CharField(max_length=200)                    # "Count the Lanterns"
+    name_km = models.CharField(max_length=200)
+    description = models.CharField(max_length=300)
+    icon_emoji = models.CharField(max_length=10)
+    activity_manifest = models.JSONField()                     # Standard activity config (operands, type, etc.)
+    sort_order = models.IntegerField(default=0)
 ```
 
-When the admin publishes a theme, Django writes the active theme config to Firestore. The mobile app checks this on launch and downloads the themed assets from the CDN if not already cached.
+**Admin Workflow:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Theme Creation & Activation Workflow                           │
+│                                                                 │
+│  1. Admin creates a SeasonalTheme (e.g., "Pchum Ben 2027")     │
+│     └── Status: DRAFT                                           │
+│                                                                 │
+│  2. Designer uploads assets via Django admin:                   │
+│     ├── Character costumes (Rive skins or override .riv files)  │
+│     ├── Environment backgrounds & decorations per screen        │
+│     ├── Lottie effects (floating candles, lantern animations)   │
+│     ├── Themed voice lines (recorded, uploaded as .m4a)         │
+│     └── Themed activities (JSON manifests)                      │
+│                                                                 │
+│  3. Admin previews the theme in a staging build of the app      │
+│     └── Status: READY                                           │
+│                                                                 │
+│  4. Admin clicks "Activate" (or auto_activate fires on date):   │
+│     ├── Status → ACTIVE                                         │
+│     ├── Theme config published to Firestore                     │
+│     ├── Assets pushed to CDN (if not already uploaded)          │
+│     └── App picks up new theme on next launch/sync              │
+│                                                                 │
+│  5. After the event ends (active_until passes):                 │
+│     ├── Status → ARCHIVED (automatic via management command)    │
+│     └── App reverts to default theme                            │
+│                                                                 │
+│  6. Next year: admin can clone last year's theme as a starting  │
+│     point, update dates and refresh assets                      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Django Admin custom action for activation:**
+
+```python
+@admin.action(description="Activate selected theme (push to live app)")
+def activate_theme(modeladmin, request, queryset):
+    if queryset.count() != 1:
+        modeladmin.message_user(request, "Select exactly one theme to activate.", level='error')
+        return
+    theme = queryset.first()
+    if theme.status != SeasonalTheme.Status.READY:
+        modeladmin.message_user(request, "Theme must be in READY status before activation.", level='error')
+        return
+
+    # Deactivate any currently active themes with lower priority
+    SeasonalTheme.objects.filter(status='active').update(status='archived')
+
+    theme.status = SeasonalTheme.Status.ACTIVE
+    theme.activated_by = request.user
+    theme.activated_at = timezone.now()
+    theme.save()
+
+    # Publish to Firestore for the mobile app
+    publish_theme_to_firestore(theme)
+
+    modeladmin.message_user(request, f"✓ {theme} is now LIVE in the app.")
+
+
+@admin.register(SeasonalTheme)
+class SeasonalThemeAdmin(admin.ModelAdmin):
+    list_display = ['event', 'year', 'status', 'active_from', 'active_until', 'activated_by']
+    list_filter = ['status', 'event', 'year']
+    actions = [activate_theme]
+    inlines = [CostumeInline, EnvironmentInline, VoiceLineInline, ActivityInline]
+```
+
+**Firestore document structure (published by Django):**
+
+```json
+{
+  "active_theme": {
+    "id": "pchum_ben_2027",
+    "event_name": "Pchum Ben",
+    "event_name_km": "ភ្ជុំបិណ្ឌ",
+    "welcome_title": "Pchum Ben Blessings",
+    "welcome_title_km": "ពរជ័យបុណ្យភ្ជុំបិណ្ឌ",
+    "welcome_message_km": "សូមរំលឹកវិញ្ញាណក្សត្រ...",
+    "colors": {
+      "primary": "#7c3aed",
+      "secondary": "#a78bfa",
+      "gradient_start": "#7c3aed",
+      "gradient_end": "#f5f3ff"
+    },
+    "costumes": {
+      "Domrey": { "skin": "pchum_ben_formal", "cdn_url": "..." },
+      "Neary": { "skin": "pchum_ben_dress", "cdn_url": "..." }
+    },
+    "environments": {
+      "home": { "background": "...", "decoration": "...", "lottie": "..." },
+      "gameplay": { "background": "...", "decoration": "..." }
+    },
+    "voice_lines": [
+      { "type": "welcome", "audio_url": "...", "text_km": "..." },
+      { "type": "encouragement", "audio_url": "...", "text_km": "..." }
+    ],
+    "activities": [
+      { "name": "Count the Rice Cakes", "manifest": {...} }
+    ],
+    "active_until": "2027-10-06T23:59:59Z",
+    "cdn_base_url": "https://cdn.domreystem.app/themes/pchum_ben_2027/"
+  }
+}
+```
+
+**Mobile app theme loading:**
+
+```
+On app launch / foreground resume:
+  1. Read Firestore → active_theme document
+  2. Compare with locally cached theme ID
+  3. If changed:
+     ├── Download new assets from CDN (costumes, backgrounds, voice)
+     ├── Cache in app documents directory
+     └── Apply theme: swap Rive skins, set background colors, load themed voice lines
+  4. If active_until has passed → revert to default theme, clear cache
+  5. If offline → use cached theme (or default if no cache)
+```
 
 #### Challenge Configurations
 
@@ -785,11 +1015,11 @@ The concept note considers "Flutter or React Native" (Section 9). Flutter is rec
 
 ## 10. Animation Implementation References
 
-This section provides direct links to official documentation, tutorials, and example projects for every animation technology used in STEM Play.
+This section provides direct links to official documentation, tutorials, and example projects for every animation technology used in Domrey STEM.
 
 ### 10.1 Rive — Interactive Character Animation (Primary)
 
-Rive is the recommended engine for all interactive character animation in STEM Play. It powers Duolingo's character system at scale and is proven for kids' apps.
+Rive is the recommended engine for all interactive character animation in Domrey STEM. It powers Duolingo's character system at scale and is proven for kids' apps.
 
 | Resource | Link | Description |
 |----------|------|-------------|
@@ -807,7 +1037,7 @@ Rive is the recommended engine for all interactive character animation in STEM P
 | **Hero Animations** | [rive.app/use-cases/hero-animations](https://rive.app/use-cases/hero-animations) | Use cases and patterns for app character animation |
 | **Pricing** | [rive.app/pricing](https://rive.app/pricing) | Free tier includes editor + all runtimes; Cadet $9/mo; Voyager $32/mo; Enterprise $120/mo |
 
-**Key Rive concepts for STEM Play:**
+**Key Rive concepts for Domrey STEM:**
 - **Shared skeletons + skins**: One skeleton rig → multiple characters (Domrey, Neary, Rithy) via skin swapping
 - **State machines**: Define states (`idle`, `talking`, `correct_reaction`, `celebrating`, `thinking`) with transitions driven by code inputs
 - **Additive blend states**: Smooth mouth-shape transitions for lip-sync (Duolingo approach)
@@ -827,7 +1057,7 @@ Spine is a mature alternative to Rive, widely used in games. Consider Spine if t
 | **Download / Trial** | [esotericsoftware.com/spine-download](http://esotericsoftware.com/spine-download) | Free trial for Windows, Mac, Linux |
 | **Pricing** | [esotericsoftware.com/spine-purchase](https://esotericsoftware.com/spine-purchase) | Essential $69 (one-time); Professional $349 (one-time); Enterprise for $500K+ revenue businesses |
 
-**Rive vs. Spine for STEM Play:**
+**Rive vs. Spine for Domrey STEM:**
 
 | Factor | Rive | Spine |
 |--------|------|-------|
@@ -837,7 +1067,7 @@ Spine is a mature alternative to Rive, widely used in games. Consider Spine if t
 | Lip-sync support | Native (additive blend states) | Manual via animation mixing |
 | Free tier | Full editor + runtimes free | Trial only; license required for production |
 | Learning curve | Lower (visual state machine editor) | Higher (more powerful, more complex) |
-| **Recommendation** | **Use for STEM Play** | Consider if team has existing Spine skills |
+| **Recommendation** | **Use for Domrey STEM** | Consider if team has existing Spine skills |
 
 ### 10.3 Lottie — UI Micro-Animations
 
@@ -854,7 +1084,7 @@ Lottie handles all non-character animation: confetti, star bursts, sticker unloc
 | **Figma Plugin** | [figma.com/community/plugin: LottieFiles](https://www.figma.com/community/plugin/809860933081065308/lottiefiles) | Export Figma animations as Lottie |
 | **Awesome Lottie** | [github.com/LottieFiles/awesome-lottie](https://github.com/LottieFiles/awesome-lottie) | Curated list of tools, plugins, and examples |
 
-**STEM Play Lottie use cases:**
+**Domrey STEM Lottie use cases:**
 - Confetti / celebration particles (Screen 6)
 - Star-burst when answering correctly
 - Sticker unlock animation
@@ -873,7 +1103,7 @@ Lottie handles all non-character animation: confetti, star bursts, sticker unloc
 | **Rive Character Animation Breakdown** | [dev.to: Rive character animation — production-ready](https://dev.to/uianimation/rive-character-animation-for-mobile-apps-a-production-ready-design-and-state-machine-breakdown-5e3m) | State machine design for mobile character animation |
 | **AI Avatar with Rive + Voice** | [dev.to: AI avatar assistant using Rive](https://dev.to/uianimation/how-to-build-a-production-ready-ai-avatar-assistant-using-rive-voice-ai-and-api-integration-2026-580i) | Full guide to voice-driven Rive characters |
 
-**Recommended lip-sync architecture for STEM Play:**
+**Recommended lip-sync architecture for Domrey STEM:**
 
 ```
 Build Time (offline):
@@ -908,7 +1138,7 @@ Fallback (for non-critical voice lines):
 
 ### 11.1 Development Approach: AI-Augmented with Claude Code
 
-STEM Play uses **Claude Code** (Anthropic's AI coding agent) as the primary engineering tool. This significantly reduces the team size needed while maintaining high code quality.
+Domrey STEM uses **Claude Code** (Anthropic's AI coding agent) as the primary engineering tool. This significantly reduces the team size needed while maintaining high code quality.
 
 **What Claude Code handles:**
 - Flutter app code generation and iteration
@@ -1028,4 +1258,4 @@ The lean team structure below reflects AI-augmented development. Claude Code rep
 
 ---
 
-*This guide complements the [STEM Play concept note](./concept-note.md). As technical decisions are validated through prototyping, this document will be updated.*
+*This guide complements the [Domrey STEM concept note](./concept-note.md). As technical decisions are validated through prototyping, this document will be updated.*

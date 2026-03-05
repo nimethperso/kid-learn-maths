@@ -1,9 +1,9 @@
-# STEM Play
+# Domrey STEM
 
 **Cambodia's kids' math learning app** — learn math, have fun.
 រៀនគណិតវិទ្យា។ សប្បាយ។
 
-STEM Play is a mobile learning app designed for Cambodian children ages 3–11 (PreK through Grade 5). It makes foundational mathematics fun and accessible through interactive, game-based activities with animated Cambodian characters, Khmer voice narration, and a culturally relevant reward system — all designed to work offline on affordable phones.
+Domrey STEM is a mobile learning app designed for Cambodian children ages 3–11 (PreK through Grade 5). It makes foundational mathematics fun and accessible through interactive, game-based activities with animated Cambodian characters, Khmer voice narration, and a culturally relevant reward system — all designed to work offline on affordable phones.
 
 ## Project Files
 
@@ -38,7 +38,7 @@ open mockup.html
 - **Offline-first** — all core content works without internet
 - **Parent dashboard** — progress tracking, accuracy, and multi-child support
 - **Telco subscription** — phone-number OTP sign-in, operator-scoped billing
-- **Seasonal themes** — Khmer New Year, Water Festival content pushed remotely
+- **Seasonal themes** — Khmer New Year, Pchum Ben, Chinese New Year and more, managed from Django admin
 
 ## Tech Stack
 
@@ -51,3 +51,5 @@ open mockup.html
 | Development | Claude Code (AI-augmented engineering) |
 
 See the [Technical Implementation Guide](./technical-implementation-guide.md) for full details including animation references, team composition, and development workflow.
+
+> **Note**: The app was previously called "STEM Play" in early documents. The official name is now **Domrey STEM**, named after the elephant mascot character Domrey (ដំរី = elephant in Khmer).
